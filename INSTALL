@@ -1,0 +1,41 @@
+Prerequisites
+-------------
+
+Each participating N95 phone requires:
+
+- The N95 Accelerometer plugin from
+  http://research.nokia.com/files/N95_RD_Accelerometer.zip
+
+  You may also need to install firmware version 20.0.015 or newer
+
+  See this wiki page for more details:
+  http://wiki.forum.nokia.com/index.php/S60_Sensor_API?ticket=ST-5043-0QRWvAYpcDct3UPHZihFFftPc16ytb4ms1E-20
+ 
+- Python for S60 v1.4.2 or newer: see http://sourceforge.net/projects/pys60
+
+- Cyke64's axyz Python extension from: http://sourceforge.net/project/showfiles.php?group_id=132176&package_id=252008
+  (install the newest self-signed version)
+
+Installation
+------------
+
+For each participating phone:
+
+- Make a directory on your phone's external memory drive called
+  e:\sounds\phonefight and copy everything from the sounds directory into
+  there. 
+
+  The e:\sounds directory may be displayed as 'Sound Clips' on your
+  phone. Don't worry about that. Just make a phonefight subdirectory
+  in there.
+
+- (This step is only necessary if socket.bt_discover() fails to
+  work. Skip it to begin with.)  Edit python/fight.py to alter the
+  value of the PHONES variable such that it contains the names of the
+  participating phones and their corresponding bluetooth
+  addresses. You can choose what string you like for the phone name.
+
+  If anyone finds the cause of this problem, or knows how to fix it,
+  please let us know.
+
+- Copy python/fight.py to e:\python or c:\python on the phone

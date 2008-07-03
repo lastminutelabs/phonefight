@@ -1,0 +1,80 @@
+Object of the game
+------------------
+
+The object of the game is to deliver ten successful blows to your
+opponent before he or she can do the same.
+
+
+Setup
+-----
+
+Each player should start the fight.py script from the Python shell's
+'Run Script' menu option.
+
+One player should select 'I am the Champion' from the menu that
+appears. This make his or her phone the 'server'.  A message will
+appear saying 'waiting for client on channel 5...' (or possibly some
+other number).
+
+The other player should select 'I am the Challenger'. He or she will
+be then prompted with 'Discover automatically?'. He or she should then
+answer 'yes' and a a list of nearby bluetooth-enabled phones will
+appear*. The other player should select the champion's phone from this
+list. 
+
+If setup is successful, a sword 'unsheathing' sound effect will be
+heard on both phones, and both players can commence combat.
+
+
+* NOTE that the Python interpreter may crash at this point. This
+probably means that the socket.bt_discover() call is faulty. To remedy
+this, alter the script as described in INSTALL, then rerun the script
+and answer 'no' to the question 'Discover automatically'. If prompted
+for a channel, enter the number displayed on the champion's phone.
+
+
+Combat
+------
+
+A vertical attack is successfully defended by a horizontal block and
+vice versa.
+
+To execute a vertical attack:
+
+Start with the phone screen facing you in a vertical (i.e. portrait)
+position. Move the phone rapidly downward and away from you.
+
+To execute a horizontal attack:
+
+Start with the phone screen facing you pointing to the left or right,
+it doesn't matter which (i.e. landscape). Move the phone rapidly away
+and to the side.
+
+To block:
+
+Hold your phone vertically or horizontally, as appropriate, with the
+screen facing you. Note that holding the phone upside-down is *not* a
+valid block.
+
+In either form of attack, a sword 'swhoosh' sound should be heard. If
+your attack is successful (i.e. not blocked), your opponent's phone
+will play an 'urrgh' sound effect and he or she will lose of his or
+her 10 health points. Otherwise, a 'ching' sound effect will be heard.
+
+When one player has no health left, the game is over.
+
+
+Playing again
+-------------
+
+At the end of the game, each player will be told the result and
+prompted to play again. Each player must give the same answer, or the
+game will crash! (see 'Known limitations' in the README file)
+
+
+Practice Mode
+-------------
+
+Selecting 'I need practice' from the first menu will initiate a
+practice mode, where you can swoosh your virtual sword to your heart's
+content. No other phone is necessary in this mode.

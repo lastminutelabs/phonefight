@@ -1,0 +1,174 @@
+Phone Fight v0.3
+----------------
+
+Phone Fight is a prototype sword-fighting game for two players
+equipped with Nokia N95 or compatible phones. It makes use of the
+accelerometer within the phones to detect simulated sword slashes and
+blocks, and Bluetooth to communicate those moves between the phones
+and to notify the winning player of victory.
+
+It was conceived and coded (hacked) in about twelve hours by a team
+from lastminute.com labs over the course of the Over the Air event
+held at Imperial College in London on April 4th-5th 2008.
+
+It is implemented using Python for S60.
+
+http://labs.lastminute.com/phonefight
+http://www.overtheair.org
+http://wiki.opensource.nokia.com/projects/PyS60
+http://wiki.forum.nokia.com/index.php/S60_Sensor_API
+
+Installation
+------------
+
+Please see the INSTALL file for detailed instructions on how to
+install Phone Fight.
+
+Please note that this is a prototype rather than a fully packaged
+standalone program, so an amount of technical knowledge is required to
+set it up. In particular, there are some prerequisites to install, and
+some editing of the fight.py Python script may be necessary to add the
+bluetooth addresses of the participating phones.
+
+
+How to play
+-----------
+
+Please see the file PLAYING for instructions on how to play the game.
+
+
+Safety
+------
+
+Remember to stand well back from your opponent when playing. We know
+to our cost that it is easy to damage your phone in the heat of
+battle. It may also be wise to use a wrist strap.
+
+lastminute.com are not liable for any damage you cause to yourself,
+your phone or anything else when playing Phone Fight.
+
+
+Compatibility
+------------
+
+The game has been tested on the original Nokia N95 and the 8GB model
+and is known to work (mostly). It may work on similar models such as
+the N82.
+
+
+Known limitations
+-----------------
+
+Bugs:
+
+- Both players must give the same answer to the question 'Play again?
+  Yes/No'. Failure to do so will cause the script to crash. The
+  inter-phone protocol needs to be extended to negotiate this.
+
+- There probably plenty of other bugs. Beware.
+
+Workarounds:
+
+- We have found the Python S60 socket.bt_discover() call to be
+  faulty. It causes the Python interpreter to crash. To avoid this, we
+  have added the facility to hard-code a list of phone bluetooth
+  addresses in the script. To use this facility, amend the script to
+  contain the correct names and bluetooth addresses for your group of
+  phone fighters, then answer 'No' when the challenger is prompted
+  with 'Discover automatically?'
+
+Gameplay inadequacies:
+
+- The program knows about re-orientation of the phone a short while
+  after it happens, leading to unexpectedly (un)successful attacks.
+
+- Each player is essentially defending all the time (either
+  horizontally or vertically).
+
+- The application is not very pretty to look at.
+
+- This isn't really a very good simulation of a sword fight. It's
+  still fun, though.
+
+
+Potential improvements
+----------------------
+
+As well as fixing the above, the following are areas which could be
+improved
+
+- Add new sound effects for new types of sword (wooden sword, photon sword...)
+
+- Add a graphical element to the game (perhaps a health bar)
+
+- Incorporate GPS, camera and network functionality...
+
+
+Program copyright
+-----------------
+
+Phone Fight is Free software and is Copyright (C) 2008 lastminute.com
+of 39 Victoria Street, London, United Kingdom SW1H 0EU
+
+We offer it in the hope that it will be interesting and entertaining,
+but we provide no warranties of any kind.
+
+You may copy, modify and redistribute the program under the terms of
+the GNU General Public Licence, version 2. You will find a copy of the
+licence in the GPL file.
+
+
+Sound samples copyright
+-----------------------
+
+The samples in the sounds directory were obtained from The Freesound
+Project (http://freesound.iua.upf.edu/) and are distributed under the
+terms of the Creative Commons Sampling Plus 1.0 licence.
+
+You will find details of this licence at:
+
+http://creativecommons.org/licenses/sampling+/1.0/
+
+Samples used from Freesound:
+ By Sruddi1 (http://freesound.iua.upf.edu/usersViewSingle.php?id=268399)
+   Grunts.wav (http://freesound.iua.upf.edu/samplesViewSingle.php?id=34875)
+ By Erdie (http://freesound.iua.upf.edu/usersViewSingle.php?id=118241)
+   male-fight02.ogg (http://freesound.iua.upf.edu/samplesViewSingle.php?id=44262)
+   sword01.wav (http://freesound.iua.upf.edu/samplesViewSingle.php?id=27826)
+   sword02.ogg (http://freesound.iua.upf.edu/samplesViewSingle.php?id=27856)
+   sword03.wav (http://freesound.iua.upf.edu/samplesViewSingle.php?id=27857)
+   sword04.wav (http://freesound.iua.upf.edu/samplesViewSingle.php?id=27858)
+ By mich3d (http://freesound.iua.upf.edu/usersViewSingle.php?id=32482)
+   Whoosh_Swish_01.wav (http://freesound.iua.upf.edu/samplesViewSingle.php?id=12656)
+   Whoosh_Swish_02.wav (http://freesound.iua.upf.edu/samplesViewSingle.php?id=12657)
+   Whoosh_Swish_03.wav (http://freesound.iua.upf.edu/samplesViewSingle.php?id=12658)
+ By lostchocolatelab (http://freesound.iua.upf.edu/usersViewSingle.php?id=1402)
+   10SWORD01.aif (http://freesound.iua.upf.edu/samplesViewSingle.php?id=1464)
+
+We have renamed, converted, cropped and re-pitched these files.
+
+
+Thanks
+------
+
+Our thanks go to the following people:
+
+- Graham Oldfield, the author of the N95 Light Sabre application,
+  which inspired this project. http://graho.wordpress.com/
+
+- The creators of the sound effects used in the game (see Copyright
+  above) and The Freesound Project.
+
+- Juergen Scheible and Ville Tuulos, the authors of the Mobile Python
+  book (ISBN 978-0-470-51505-1), without which we would not have been
+  able to code this prototype so quickly.
+
+- The contributors to Forum Nokia, where we picked up a few coding
+  tips, and especially to Cyke64 for his axyz module, and Nokia
+  themselves for supporting this sort of development on their phones.
+
+- The organisers of the Over The Air event
+
+Enjoy your phone fighting!
+
+The lastminute.com labs team.
