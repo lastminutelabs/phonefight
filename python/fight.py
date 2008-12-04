@@ -40,23 +40,21 @@ class UI:
         self.needs_refresh=True
         
         # Create the canvas
-        self.img=None
+        self.backgroundImage=None
         appuifw.app.orientation='portrait'
         appuifw.app.screen='large'
         self.canvas=appuifw.Canvas ( redraw_callback=self.handle_redraw, event_callback=self.handle_event )
         appuifw.app.body=self.canvas
         
-        # Create the off screen buffer
+        # Blank the background of the canvas
         w,h=self.canvas.size
-        self.img=graphics.Image.new((w, h))
-        self.img.clear((0,0,0))
+        bgcolor=graphics.Image.new((w, h))
+        bgcolor.clear((0,0,0))
+        self.canvas.blit(bgcolor)
         
-        # Add the background image
-        try:
-            backgroundImage=graphics.Image.open('e:\\Python\\fight_bg.png')
-            self.img.blit(backgroundImage)
-        except:
-            pass
+        # Load the images
+        self.backgroundImage=self.load_image('e:\\Python\\fight_bg.png')
+        self.hitImage=self.load_image('e:\\Python\\hit_1.gif')
         
         # Make sure that the background gets draw immediately
         self.handle_redraw(None)
@@ -68,6 +66,13 @@ class UI:
     def __del__(self):
         self.timer.cancel()
         
+    # Loads the specified image or returns a 1x1 blank image in case of an error
+    def load_image(self, src):
+        try:
+            return graphics.Image.open(src)
+        except:
+            return graphics.Image.new((1,1))
+    
     def update_ui(self):
         if (self.needs_refresh):
             self.handle_redraw(None)
@@ -77,8 +82,11 @@ class UI:
         self.handle_redraw(None)
         
     def handle_redraw(self, rect=None):
-        if self.img:
-            self.canvas.blit(self.img)
+        if self.backgroundImage:
+            try:
+                self.canvas.blit(self.backgroundImage)
+            except:
+                pass
             self.needs_refresh=False
 
 
