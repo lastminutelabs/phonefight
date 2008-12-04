@@ -60,6 +60,9 @@ class UI:
         self.timer=e32.Ao_timer()
         self.timer.after(UI.FRAME_INTERVAL, self.update_ui)
         
+    def __del__(self):
+        self.timer.cancel()
+        
     def update_ui(self):
         if (self.needs_refresh):
             self.handle_redraw(None)
