@@ -23,9 +23,22 @@ import sys
 import traceback
 import graphics
 
+# Misty is noce to remove the screensave but we're OK without it
+try:
+    __import__('misty')
+except:
+    pass
+
 
 class UI:
+    
+    FRAME_INTERVAL=0.1
+    
     def __init__(self):
+        
+        # Initialize some properties
+        self.needs_refresh=True
+        
         # Create the canvas
         self.img=None
         appuifw.app.orientation='portrait'
@@ -43,12 +56,22 @@ class UI:
         self.img.blit(backgroundImage, target=(100,0))
         self.handle_redraw(None)
         
+        # Start a refresh timer
+        self.timer=e32.Ao_timer()
+        self.timer.after(UI.FRAME_INTERVAL, self.update_ui)
+        
+    def update_ui(self):
+        if (self.needs_refresh):
+            self.handle_redraw(None)
+        self.timer.after(UI.FRAME_INTERVAL, self.update_ui)
+        
     def handle_event(self, event):
         self.handle_redraw(None)
         
     def handle_redraw(self, rect=None):
         if self.img:
             self.canvas.blit(self.img)
+            self.needs_refresh=False
         
 # everything is in a try block for safety reasons. stand back!
 try:
@@ -179,6 +202,11 @@ try:
             self.play_sound(START_SOUND)
 
             while not self.game_over:
+                
+                # Stop the screensaver coming on (if we have the misty module present)
+                if globals().__contains__('misty'):
+                    misty.reset_inactivity_time()
+                
                 self.eventlock.wait()
                 if self.event == INCOMING_HORIZONTAL_ATTACK_EVENT:
                     self.defend(self.event)
