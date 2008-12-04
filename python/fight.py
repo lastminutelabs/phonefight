@@ -21,12 +21,24 @@ import sensor
 import socket
 import sys
 import traceback
-import threading
+import thread
 
 
-class UI(threading.Thread):
-    def __init__(selfself):
-        print("hi")
+class UI:
+    def __init__(self):
+        # Create the ui thread and start it
+        thread.start_new_thread(self.ui_thread,())
+        
+    def update(self, changed):
+        self.ui_lock.signal()
+        
+    def ui_thread(self):
+        # Create the lock on the ui
+        self.ui_lock=e32.Ao_lock()
+        
+        # Enter the ui loop
+        while(1):
+            self.ui_lock.wait()
 
 
 # everything is in a try block for safety reasons. stand back!
@@ -346,6 +358,7 @@ try:
             return None
 
     # Initialize the UI
+    print("hello")
     ui=UI()
 
     # Start a fight.
