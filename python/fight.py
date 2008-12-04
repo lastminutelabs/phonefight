@@ -52,8 +52,13 @@ class UI:
         self.img.clear((0,0,0))
         
         # Add the background image
-        backgroundImage=graphics.Image.open('e:\\Python\\pong.png')
-        self.img.blit(backgroundImage, target=(100,0))
+        try:
+            backgroundImage=graphics.Image.open('e:\\Python\\fight_bg.png')
+            self.img.blit(backgroundImage, target=(100,0))
+        except:
+            pass
+        
+        # Make sure that the background gets draw immediately
         self.handle_redraw(None)
         
         # Start a refresh timer
@@ -75,7 +80,9 @@ class UI:
         if self.img:
             self.canvas.blit(self.img)
             self.needs_refresh=False
-        
+
+
+
 # everything is in a try block for safety reasons. stand back!
 try:
     # this hardcoding is because bt_discover doesn't alway work
