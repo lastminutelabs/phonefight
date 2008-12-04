@@ -54,7 +54,7 @@ class UI:
         # Add the background image
         try:
             backgroundImage=graphics.Image.open('e:\\Python\\fight_bg.png')
-            self.img.blit(backgroundImage, target=(100,0))
+            self.img.blit(backgroundImage)
         except:
             pass
         
