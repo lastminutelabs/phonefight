@@ -46,11 +46,8 @@ class UI:
         self.canvas=appuifw.Canvas ( redraw_callback=self.handle_redraw, event_callback=self.handle_event )
         appuifw.app.body=self.canvas
         
-        # Blank the background of the canvas
-        w,h=self.canvas.size
-        bgcolor=graphics.Image.new((w, h))
-        bgcolor.clear((0,0,0))
-        self.canvas.blit(bgcolor)
+        # Create an offscreen buffer
+        self.buffer=graphics.Image.new(self.canvas.size)
         
         # Load the images
         self.backgroundImage=self.load_image('e:\\Python\\fight_bg.png')
@@ -74,8 +71,8 @@ class UI:
             return graphics.Image.new((1,1))
     
     def update_ui(self):
-        if (self.needs_refresh):
-            self.handle_redraw(None)
+       # if (self.needs_refresh):
+        self.handle_redraw(None)
         self.timer.after(UI.FRAME_INTERVAL, self.update_ui)
         
     def handle_event(self, event):
@@ -84,9 +81,20 @@ class UI:
     def handle_redraw(self, rect=None):
         if self.backgroundImage:
             try:
-                self.canvas.blit(self.backgroundImage)
+                # Put the backgrounnd image in place
+                self.buffer.blit(self.backgroundImage)
+                
+                # Add your health and score
+                if (PRACTICE_MODE==play_mode):
+                    self.buffer.text((10,10), u"Practice mode", fill=0xffffff)
+                else:
+                    self.buffer.text((10,10), u"You're in a fight", fill=0xffffff)
             except:
                 pass
+
+            # Finally, blit the buffer onto the canvas            
+            self.canvas.blit(self.buffer) 
+            
             self.needs_refresh=False
 
 
