@@ -21,26 +21,35 @@ import sensor
 import socket
 import sys
 import traceback
-import thread
+import graphics
 
 
 class UI:
     def __init__(self):
-        # Create the ui thread and start it
-        thread.start_new_thread(self.ui_thread,())
+        # Create the canvas
+        self.img=None
+        appuifw.app.orientation='portrait'
+        appuifw.app.screen='large'
+        self.canvas=appuifw.Canvas ( redraw_callback=self.handle_redraw, event_callback=self.handle_event )
+        appuifw.app.body=self.canvas
         
-    def update(self, changed):
-        self.ui_lock.signal()
+        # Create the off screen buffer
+        w,h=self.canvas.size
+        self.img=graphics.Image.new((w, h))
+        self.img.clear((0,0,0))
         
-    def ui_thread(self):
-        # Create the lock on the ui
-        self.ui_lock=e32.Ao_lock()
+        # Add the background image
+        backgroundImage=graphics.Image.open('e:\\Python\\pong.png')
+        self.img.blit(backgroundImage, target=(100,0))
+        self.handle_redraw(None)
         
-        # Enter the ui loop
-        while(1):
-            self.ui_lock.wait()
-
-
+    def handle_event(self, event):
+        self.handle_redraw(None)
+        
+    def handle_redraw(self, rect=None):
+        if self.img:
+            self.canvas.blit(self.img)
+        
 # everything is in a try block for safety reasons. stand back!
 try:
     # this hardcoding is because bt_discover doesn't alway work
@@ -358,7 +367,6 @@ try:
             return None
 
     # Initialize the UI
-    print("hello")
     ui=UI()
 
     # Start a fight.
