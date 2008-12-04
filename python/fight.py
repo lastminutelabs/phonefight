@@ -21,6 +21,13 @@ import sensor
 import socket
 import sys
 import traceback
+import threading
+
+
+class UI(threading.Thread):
+    def __init__(selfself):
+        print("hi")
+
 
 # everything is in a try block for safety reasons. stand back!
 try:
@@ -338,6 +345,8 @@ try:
             appuifw.note(u"Cannot connect. Sorry.", "error")            
             return None
 
+    # Initialize the UI
+    ui=UI()
 
     # Start a fight.
     play_mode = appuifw.popup_menu([u"I am the champion",
