@@ -93,7 +93,7 @@ class UI:
             try:
                 # Put the backgrounnd image in place
                 self.buffer.blit(self.backgroundImage)
-                self.buffer.blit(self.hitImage, mask=self.hitImageMask)
+               # self.buffer.blit(self.hitImage, mask=self.hitImageMask)
                 
                 # Add your health and score
                 if (PRACTICE_MODE==play_mode):
