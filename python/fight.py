@@ -23,7 +23,7 @@ import sys
 import traceback
 import graphics
 
-# Misty is noce to remove the screensave but we're OK without it
+# Misty lets us remove the screensave but we're OK without it
 try:
     __import__('misty')
 except:
@@ -37,7 +37,7 @@ class UI:
     def __init__(self):
         
         # Initialize some properties
-        self.needs_refresh=True
+        self.showing_hit_image=False
         
         # Load the images
         self.backgroundImage=self.load_image('e:\\Python\\fight_bg.png')
@@ -81,7 +81,6 @@ class UI:
             return graphics.Image.new((1,1), '1')
     
     def update_ui(self):
-       # if (self.needs_refresh):
         self.handle_redraw(None)
         self.timer.after(UI.FRAME_INTERVAL, self.update_ui)
         
@@ -105,8 +104,6 @@ class UI:
 
             # We always have _something_ to show on the canvas, even if the previous stuff failed at some point         
             self.canvas.blit(self.buffer) 
-            
-            self.needs_refresh=False
 
 
 
