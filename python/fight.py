@@ -37,7 +37,7 @@ class UI:
     def __init__(self):
         
         # Initialize some properties
-        self.showing_hit_image=False
+        self.hit_counter=0
         
         # Load the images
         self.backgroundImage=self.load_image('e:\\Python\\fight_bg.png')
@@ -87,12 +87,21 @@ class UI:
     def handle_event(self, event):
         self.handle_redraw(None)
         
+    def trigger_hit(self):
+        self.hit_counter=100
+        pass
+        
     def handle_redraw(self, rect=None):
         if self.backgroundImage:
             try:
                 # Put the backgrounnd image in place
                 self.buffer.blit(self.backgroundImage)
-               # self.buffer.blit(self.hitImage, mask=self.hitImageMask)
+               
+                if (self.hit_counter>0):
+                    self.buffer.blit(self.hitImage, mask=self.hitImageMask)
+                    self.hit_counter-=FRAME_INTERVAL
+                else:
+                    self.hit_counter=0
                 
                 # Add your health and score
                 if (PRACTICE_MODE==play_mode):
@@ -323,6 +332,7 @@ try:
                 if self.health:
                     print "you're hit, health now %d!" % self.health
                     self.play_sound(HIT_SOUND)
+                    ui.trigger_hit()
                 else:
                     self.dead()
 
