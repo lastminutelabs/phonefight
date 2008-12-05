@@ -39,8 +39,12 @@ class UI:
         # Initialize some properties
         self.needs_refresh=True
         
+        # Load the images
+        self.backgroundImage=self.load_image('e:\\Python\\fight_bg.png')
+        self.hitImage=self.load_image('e:\\Python\\hit_1.png')
+        self.hitImageMask=self.load_mask_for('e:\\Python\\hit_1_mask.png', self.hitImage)
+
         # Create the canvas
-        self.backgroundImage=None
         appuifw.app.orientation='portrait'
         appuifw.app.screen='large'
         self.canvas=appuifw.Canvas ( redraw_callback=self.handle_redraw, event_callback=self.handle_event )
@@ -48,10 +52,6 @@ class UI:
         
         # Create an offscreen buffer
         self.buffer=graphics.Image.new(self.canvas.size)
-        
-        # Load the images
-        self.backgroundImage=self.load_image('e:\\Python\\fight_bg.png')
-        self.hitImage=self.load_image('e:\\Python\\hit_1.gif')
         
         # Make sure that the background gets draw immediately
         self.handle_redraw(None)
@@ -69,6 +69,16 @@ class UI:
             return graphics.Image.open(src)
         except:
             return graphics.Image.new((1,1))
+        
+    # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it 
+    def load_mask_for(self, mask_src, image):
+        try:
+            width,height=image.size
+            mask=graphics.Image.new((width,height), '1')
+            mask.load(mask_src)
+            return mask
+        except:
+            return graphics.Image.new((1,1), '1')
     
     def update_ui(self):
        # if (self.needs_refresh):
@@ -83,6 +93,7 @@ class UI:
             try:
                 # Put the backgrounnd image in place
                 self.buffer.blit(self.backgroundImage)
+                self.buffer.blit(self.hitImage, mask=self.hitImageMask)
                 
                 # Add your health and score
                 if (PRACTICE_MODE==play_mode):
@@ -92,7 +103,7 @@ class UI:
             except:
                 pass
 
-            # Finally, blit the buffer onto the canvas            
+            # We always have _something_ to show on the canvas, even if the previous stuff failed at some point         
             self.canvas.blit(self.buffer) 
             
             self.needs_refresh=False
