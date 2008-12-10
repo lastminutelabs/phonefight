@@ -40,21 +40,21 @@ class UI:
         self.hit_counter=0
         
         # Load the images
-        self.backgroundImage=self.load_image('e:\\Python\\fight_bg.png')
-        self.hitImage=self.load_image('e:\\Python\\hit_1.png')
-        self.hitImageMask=self.load_mask_for('e:\\Python\\hit_1_mask.png', self.hitImage)
+        self.backgroundImage=self.__load_image('e:\\Python\\fight_bg.png')
+        self.hitImage=self.__load_image('e:\\Python\\hit_1.png')
+        self.hitImageMask=self.__load_mask_for('e:\\Python\\hit_1_mask.png', self.hitImage)
 
         # Create the canvas
         appuifw.app.orientation='portrait'
         appuifw.app.screen='large'
-        self.canvas=appuifw.Canvas ( redraw_callback=self.handle_redraw, event_callback=self.handle_event )
+        self.canvas=appuifw.Canvas ( redraw_callback=self.__handle_redraw, event_callback=self.__handle_event )
         appuifw.app.body=self.canvas
         
-        # Create an offscreen buffer
+        # Create an offscreen buffer - draw onto this in the __handle_redraw method and then blit onto the main canvas
         self.buffer=graphics.Image.new(self.canvas.size)
         
         # Make sure that the background gets draw immediately
-        self.handle_redraw(None)
+        self.__handle_redraw(None)
         
         # Start a refresh timer
         self.timer=e32.Ao_timer()
@@ -64,14 +64,14 @@ class UI:
         self.timer.cancel()
         
     # Loads the specified image or returns a 1x1 blank image in case of an error
-    def load_image(self, src):
+    def __load_image(self, src):
         try:
             return graphics.Image.open(src)
         except:
             return graphics.Image.new((1,1))
         
     # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it 
-    def load_mask_for(self, mask_src, image):
+    def __load_mask_for(self, mask_src, image):
         try:
             width,height=image.size
             mask=graphics.Image.new((width,height), '1')
@@ -81,17 +81,17 @@ class UI:
             return graphics.Image.new((1,1), '1')
     
     def update_ui(self):
-        self.handle_redraw(None)
+        self.__handle_redraw(None)
         self.timer.after(UI.FRAME_INTERVAL, self.update_ui)
         
-    def handle_event(self, event):
-        self.handle_redraw(None)
+    def __handle_event(self, event):
+        self.__handle_redraw(None)
         
     def trigger_hit(self):
         self.hit_counter=100
         pass
         
-    def handle_redraw(self, rect=None):
+    def __handle_redraw(self, rect=None):
         if self.backgroundImage:
             try:
                 # Put the backgrounnd image in place
