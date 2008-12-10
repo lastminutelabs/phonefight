@@ -120,6 +120,7 @@ try:
             self.max_health=0
             self.frame_number=0
             self.playing=False
+            self.silent=False
             
             self.skin=self.SABER_SKIN
                         
@@ -331,7 +332,6 @@ try:
             self.sock = sock
             
             self.orientation = sensor.orientation.TOP
-            self.silent = False
             self.won = False
             self.elapsed_time = 0.0
             self.last_attack = 0.0
@@ -366,12 +366,10 @@ try:
             self.tick()
 
         def sound_on(self):
-            print "sound on"
-            self.silent = False;
+            ui.silent = False;
 
         def sound_off(self):
-            print "sound off"
-            self.silent = True;
+            ui.silent = True;
             
         def sword_mode(self):
             ui.skin=ui.SWORD_SKIN
