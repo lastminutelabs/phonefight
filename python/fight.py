@@ -47,7 +47,7 @@ class UI:
         # Initiate the sounds
         self.startSound = LIGHTSABER_START_SOUND
         self.chingSounds = LIGHTSABER_CHING_SOUNDS
-        self.hitSound = LIGHTSABER_HIT_SOUND
+        self.hitSounds = LIGHTSABER_HIT_SOUNDS
         self.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
         self.deathSound = LIGHTSABER_DEATH_SOUND
         self.humSound = LIGHTSABER_HUM_SOUND
@@ -175,7 +175,7 @@ try:
 
     def init_sound(path):
         s = audio.Sound.open(path)
-        s.set_volume(8)
+        s.set_volume(3)
         return s
 
     # Sword sounds
@@ -187,7 +187,7 @@ try:
                     init_sound("e:\\sounds\phonefight\ching4.wav"),
                     init_sound("e:\\sounds\phonefight\ching5.wav")]
 
-    SWORD_HIT_SOUND = init_sound("e:\\sounds\phonefight\hit.wav")
+    SWORD_HIT_SOUNDS = [init_sound("e:\\sounds\phonefight\hit.wav")]
     #SWORD_VICTORY_SOUND = init_sound("e:\\sounds\phonefight\victory.wav")
     
     SWORD_WHOOSH_SOUNDS = [init_sound("e:\\sounds\phonefight\whoosh1.wav"),
@@ -214,7 +214,10 @@ try:
                     init_sound("e:\\sounds\phonefight\saberclash14.WAV"),
                     init_sound("e:\\sounds\phonefight\saberclash15.WAV")]
 
-    LIGHTSABER_HIT_SOUND = init_sound("e:\\sounds\phonefight\hit.wav")
+    LIGHTSABER_HIT_SOUNDS = [init_sound("e:\\sounds\phonefight\sabrhit2.wav"),
+                             init_sound("e:\\sounds\phonefight\sabrhit3.wav"),
+                             init_sound("e:\\sounds\phonefight\sabrhit4.wav"),
+                             init_sound("e:\\sounds\phonefight\sabrhit5.wav")]
     #LIGHTSABER_VICTORY_SOUND = init_sound("e:\\sounds\phonefight\victory.wav")
     
     LIGHTSABER_WHOOSH_SOUNDS = [init_sound("e:\\sounds\phonefight\Fastswing1.wav"),
@@ -297,7 +300,7 @@ try:
             # Initiate the sounds
             ui.startSound = SWORD_START_SOUND
             ui.chingSounds = SWORD_CHING_SOUNDS
-            ui.hitSound = SWORD_HIT_SOUND
+            ui.hitSounds = SWORD_HIT_SOUNDS
             ui.whooshSounds = SWORD_WHOOSH_SOUNDS
             ui.deathSound = SWORD_DEATH_SOUND
             ui.humSound = SWORD_HUM_SOUND            
@@ -308,7 +311,7 @@ try:
             # Initiate the sounds
             ui.startSound = LIGHTSABER_START_SOUND
             ui.chingSounds = LIGHTSABER_CHING_SOUNDS
-            ui.hitSound = LIGHTSABER_HIT_SOUND
+            ui.hitSounds = LIGHTSABER_HIT_SOUNDS
             ui.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
             ui.deathSound = LIGHTSABER_DEATH_SOUND
             ui.humSound = LIGHTSABER_HUM_SOUND    
@@ -404,7 +407,7 @@ try:
                 self.health -= 1
                 if self.health:
                     print "you're hit, health now %d!" % self.health
-                    self.play_sound(ui.hitSound)
+                    self.play_sound(one_of(ui.hitSounds))
                     ui.trigger_hit()
                 else:
                     self.dead()
