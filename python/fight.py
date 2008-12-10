@@ -159,8 +159,8 @@ try:
                 #except:
                 #    pass
 
-                self.buffer.text((10,100), u"frame number : "+str(self.frame_number), fill=0xffffff)
-                self.frame_number+=1
+                #self.buffer.text((10,100), u"frame number : "+str(self.frame_number), fill=0xffffff)
+                #self.frame_number+=1
         
                 # We always have _something_ to show on the canvas, even if the previous stuff failed at some point         
                 self.canvas.blit(self.buffer) 
