@@ -51,8 +51,7 @@ class UI:
         self.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
         self.deathSound = LIGHTSABER_DEATH_SOUND
         self.humSound = LIGHTSABER_HUM_SOUND
-
-        return        
+     
         # Create the canvas
         appuifw.app.orientation='portrait'
         appuifw.app.screen='large'
@@ -301,6 +300,7 @@ try:
         def sword_mode(self):
             ui.backgroundImage=ui.load_image(SWORD_BACKGROUND)
             # Initiate the sounds
+            ui.humSound.stop()
             ui.startSound = SWORD_START_SOUND
             ui.chingSounds = SWORD_CHING_SOUNDS
             ui.hitSounds = SWORD_HIT_SOUNDS
@@ -312,6 +312,7 @@ try:
         def lightsaber_mode(self):
             ui.backgroundImage=ui.load_image(LIGHTSABER_BACKGROUND)
             # Initiate the sounds
+            ui.humSound.stop()
             ui.startSound = LIGHTSABER_START_SOUND
             ui.chingSounds = LIGHTSABER_CHING_SOUNDS
             ui.hitSounds = LIGHTSABER_HIT_SOUNDS
@@ -389,14 +390,13 @@ try:
           if prev_state == audio.EPlaying and current_state==audio.EOpen:
             ui.humSound.stop()
             ui.humSound.play(times = 600)
-          else:
-            print "no hum now missus"
         
         
         def play_sound(self, sound, hum=False):
             if not self.silent:
                 try:
                     sound.stop()
+                    ui.humSound.stop()
                     if hum:
                       sound.play(times=1, callback = self.hum_callback)
                     else:
