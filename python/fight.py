@@ -106,6 +106,9 @@ try:
                 print("Image "+src+" failed to load")
                 return img
             
+        def load_image(self, src):
+            return self.__load_image(src)
+            
         # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it 
         def __load_mask_for(self, mask_src, image):
             try:
@@ -361,7 +364,7 @@ try:
             self.silent = True;
             
         def sword_mode(self):
-            ui.backgroundImage=ui.__load_image(SWORD_BACKGROUND)
+            ui.backgroundImage=ui.load_image(SWORD_BACKGROUND)
             # Initiate the sounds
             ui.startSound = SWORD_START_SOUND
             ui.chingSounds = SWORD_CHING_SOUNDS
@@ -372,7 +375,7 @@ try:
             ui.invalidate_ui
             
         def lightsaber_mode(self):
-            ui.backgroundImage=ui.__load_image(LIGHTSABER_BACKGROUND)
+            ui.backgroundImage=ui.load_image(LIGHTSABER_BACKGROUND)
             # Initiate the sounds
             ui.startSound = LIGHTSABER_START_SOUND
             ui.chingSounds = LIGHTSABER_CHING_SOUNDS
