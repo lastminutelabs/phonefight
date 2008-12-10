@@ -32,45 +32,8 @@ except:
 
 # Everything is in a try block for safety reasons. stand back!
 try:
-    
-<<<<<<< HEAD:python/fight.py
-    def __init__(self):
-        
-        # Initialize some properties
-        self.hit_counter=0
-        
-        # Load the images
-        self.backgroundImage=self.load_image(LIGHTSABER_BACKGROUND)
-        self.hitImage=self.load_image('e:\\Python\\hit_1.png')
-        self.hitImageMask=self.load_mask_for('e:\\Python\\hit_1_mask.png', self.hitImage)
-
-        # Initiate the sounds
-        self.startSound = LIGHTSABER_START_SOUND
-        self.chingSounds = LIGHTSABER_CHING_SOUNDS
-        self.hitSounds = LIGHTSABER_HIT_SOUNDS
-        self.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
-        self.deathSound = LIGHTSABER_DEATH_SOUND
-        self.humSound = LIGHTSABER_HUM_SOUND
-     
-        # Create the canvas
-        appuifw.app.orientation='portrait'
-        appuifw.app.screen='large'
-        self.canvas=appuifw.Canvas ( redraw_callback=self.handle_redraw, event_callback=self.handle_event )
-        appuifw.app.body=self.canvas
-        
-        
-        
-        # Create an offscreen buffer
-        self.buffer=graphics.Image.new(self.canvas.size)
-        
-        # Make sure that the background gets draw immediately
-        self.handle_redraw(None)
-=======
     class UI:
->>>>>>> origin/ui:python/fight.py
-        
         FRAME_INTERVAL=0.1
-        
         def __init__(self):
             
             # Initialize some properties
