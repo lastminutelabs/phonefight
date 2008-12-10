@@ -51,12 +51,15 @@ class UI:
         self.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
         self.deathSound = LIGHTSABER_DEATH_SOUND
         self.humSound = LIGHTSABER_HUM_SOUND
-        
+
+        return        
         # Create the canvas
         appuifw.app.orientation='portrait'
         appuifw.app.screen='large'
         self.canvas=appuifw.Canvas ( redraw_callback=self.handle_redraw, event_callback=self.handle_event )
         appuifw.app.body=self.canvas
+        
+        
         
         # Create an offscreen buffer
         self.buffer=graphics.Image.new(self.canvas.size)
@@ -231,7 +234,7 @@ try:
 
     LIGHTSABER_DEATH_SOUND = init_sound("e:\\sounds\phonefight\death.wav")
     
-    LIGHTSABER_HUM_SOUND = init_sound("e:\\sounds\phonefight\hum.wav")
+    LIGHTSABER_HUM_SOUND = init_sound("e:\\sounds\phonefight\hum1.wav")
     
     
     # Load background images
@@ -318,7 +321,7 @@ try:
             ui.update_ui
 
         def play(self):
-            self.play_sound(ui.startSound)
+            self.play_sound(ui.startSound, True)
 
             while not self.game_over:
                 
@@ -382,11 +385,23 @@ try:
                 
                 self.eventlock.signal()
 
-        def play_sound(self, sound):
+        def hum_callback(self, prev_state, current_state, error):
+          if prev_state == audio.EPlaying and current_state==audio.EOpen:
+            ui.humSound.stop()
+            ui.humSound.play(times = 600)
+          else:
+            print "no hum now missus"
+        
+        
+        def play_sound(self, sound, hum=False):
             if not self.silent:
                 try:
                     sound.stop()
-                    sound.play(times=1)
+                    if hum:
+                      sound.play(times=1, callback = self.hum_callback)
+                    else:
+                      sound.play(times=1)
+                      
                 except:
                     pass
 
@@ -402,12 +417,12 @@ try:
 
             if succeeded:
                 print "defence succeeded!"
-                self.play_sound(one_of(ui.chingSounds))
+                self.play_sound(one_of(ui.chingSounds), True)
             else:
                 self.health -= 1
                 if self.health:
                     print "you're hit, health now %d!" % self.health
-                    self.play_sound(one_of(ui.hitSounds))
+                    self.play_sound(one_of(ui.hitSounds), True)
                     ui.trigger_hit()
                 else:
                     self.dead()
@@ -425,7 +440,7 @@ try:
             self.won = True
 
         def attack(self, event):
-            self.play_sound(one_of(ui.whooshSounds))
+            self.play_sound(one_of(ui.whooshSounds), True)
             if self.sock:
                 if event == OUTGOING_HORIZONTAL_ATTACK_EVENT:
                     message = HORIZONTAL_ATTACK_MESSAGE
