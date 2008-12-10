@@ -162,9 +162,6 @@ try:
                 img=graphics.Image.new((1,1))
                 print("Image "+src+" failed to load")
                 return img
-            
-        def load_image(self, src):
-            return self.__load_image(src)
         
         def __init_sound(self, path):
             s = audio.Sound.open(path)
@@ -385,7 +382,7 @@ try:
         def play(self):
 
             ui.start_anew(self.health)
-            ui.play_sound(ui.skin.startSound, True)
+            ui.play_sound(ui.skin['startSound'], True)
 
             while not self.game_over:
                 
@@ -463,12 +460,12 @@ try:
 
             if succeeded:
                 print "defence succeeded!"
-                ui.play_sound(one_of(ui.skin.chingSounds), True)
+                ui.play_sound(one_of(ui.skin['chingSounds']), True)
             else:
                 self.health -= 1
                 if self.health:
                     print "you're hit, health now %d!" % self.health
-                    ui.play_sound(one_of(ui.skin.hitSounds), True)
+                    ui.play_sound(one_of(ui.skin['hitSounds']), True)
                     ui.trigger_hit(self.health)
                 else:
                     self.dead()
@@ -477,16 +474,16 @@ try:
             print "you lose!"                
             self.sock.send(VICTORY_MESSAGE)
             self.game_over = True
-            ui.play_sound(ui.skin.deathSound)
+            ui.play_sound(ui.skin['deathSound'])
 
         def victory(self):
             print "you win!"                
-            #self.play_sound(ui.victorySound)
+            #self.play_sound(ui.skin['victorySound'])
             self.game_over = True
             self.won = True
 
         def attack(self, event):
-            ui.play_sound(one_of(ui.skin.whooshSounds), True)
+            ui.play_sound(one_of(ui.skin['whooshSounds']), True)
             if self.sock:
                 if event == OUTGOING_HORIZONTAL_ATTACK_EVENT:
                     message = HORIZONTAL_ATTACK_MESSAGE
