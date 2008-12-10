@@ -165,9 +165,13 @@ try:
                 return img
         
         def __init_sound(self, path):
-            s = audio.Sound.open(path)
-            s.set_volume(self.DEFAULT_SOUND_VOLUME)
-            return s
+            try:
+                s = audio.Sound.open(path)
+                s.set_volume(self.DEFAULT_SOUND_VOLUME)
+                return s
+            except:
+                print "Warning - sound sample "+path+" not found"
+                return None
             
         # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it 
         def __load_mask_for(self, mask_src, image):
