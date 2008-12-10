@@ -240,7 +240,7 @@ try:
 
     def init_sound(path):
         s = audio.Sound.open(path)
-        s.set_volume(2)
+        s.set_volume(10)
         return s
 
     # Sword sounds
