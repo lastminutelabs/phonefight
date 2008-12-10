@@ -40,10 +40,18 @@ class UI:
         self.hit_counter=0
         
         # Load the images
-        self.backgroundImage=self.load_image('e:\\Python\\fight_bg.png')
+        self.backgroundImage=self.load_image(LIGHTSABER_BACKGROUND)
         self.hitImage=self.load_image('e:\\Python\\hit_1.png')
         self.hitImageMask=self.load_mask_for('e:\\Python\\hit_1_mask.png', self.hitImage)
 
+        # Initiate the sounds
+        self.startSound = LIGHTSABER_START_SOUND
+        self.chingSounds = LIGHTSABER_CHING_SOUNDS
+        self.hitSound = LIGHTSABER_HIT_SOUND
+        self.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
+        self.deathSound = LIGHTSABER_DEATH_SOUND
+        self.humSound = LIGHTSABER_HUM_SOUND
+        
         # Create the canvas
         appuifw.app.orientation='portrait'
         appuifw.app.screen='large'
@@ -163,30 +171,71 @@ try:
                              sensor.orientation.TOP: "top",
                              sensor.orientation.BOTTOM: "bottom"}
 
+
+
     def init_sound(path):
         s = audio.Sound.open(path)
         s.set_volume(8)
         return s
 
-    START_SOUND = init_sound("e:\\sounds\phonefight\start.wav")
+    # Sword sounds
+    SWORD_START_SOUND = init_sound("e:\\sounds\phonefight\start.wav")
 
-    CHING_SOUNDS = [init_sound("e:\\sounds\phonefight\ching1.wav"),
+    SWORD_CHING_SOUNDS = [init_sound("e:\\sounds\phonefight\ching1.wav"),
                     init_sound("e:\\sounds\phonefight\ching2.wav"),
                     init_sound("e:\\sounds\phonefight\ching3.wav"),
                     init_sound("e:\\sounds\phonefight\ching4.wav"),
                     init_sound("e:\\sounds\phonefight\ching5.wav")]
 
-    HIT_SOUND = init_sound("e:\\sounds\phonefight\hit.wav")
-    #VICTORY_SOUND = init_sound("e:\\sounds\phonefight\victory.wav")
+    SWORD_HIT_SOUND = init_sound("e:\\sounds\phonefight\hit.wav")
+    #SWORD_VICTORY_SOUND = init_sound("e:\\sounds\phonefight\victory.wav")
     
-    WHOOSH_SOUNDS = [init_sound("e:\\sounds\phonefight\whoosh1.wav"),
+    SWORD_WHOOSH_SOUNDS = [init_sound("e:\\sounds\phonefight\whoosh1.wav"),
                      init_sound("e:\\sounds\phonefight\whoosh2.wav"),
                      init_sound("e:\\sounds\phonefight\whoosh3.wav"),
                      init_sound("e:\\sounds\phonefight\whoosh4.wav"),
                      init_sound("e:\\sounds\phonefight\whoosh5.wav"),
                      init_sound("e:\\sounds\phonefight\whoosh6.wav")]
 
-    DEATH_SOUND = init_sound("e:\\sounds\phonefight\death.wav")
+    SWORD_DEATH_SOUND = init_sound("e:\\sounds\phonefight\death.wav")
+    
+    SWORD_HUM_SOUND = init_sound("e:\\sounds\phonefight\silence.wav")
+    
+    
+    
+    # Lightsaber sounds
+    LIGHTSABER_START_SOUND = init_sound("e:\\sounds\phonefight\saber_start.wav")
+
+    LIGHTSABER_CHING_SOUNDS = [init_sound("e:\\sounds\phonefight\saberclash1.WAV"),
+                    init_sound("e:\\sounds\phonefight\saberclash10.WAV"),
+                    init_sound("e:\\sounds\phonefight\saberclash11.WAV"),
+                    init_sound("e:\\sounds\phonefight\saberclash12.WAV"),
+                    init_sound("e:\\sounds\phonefight\saberclash13.WAV"),
+                    init_sound("e:\\sounds\phonefight\saberclash14.WAV"),
+                    init_sound("e:\\sounds\phonefight\saberclash15.WAV")]
+
+    LIGHTSABER_HIT_SOUND = init_sound("e:\\sounds\phonefight\hit.wav")
+    #LIGHTSABER_VICTORY_SOUND = init_sound("e:\\sounds\phonefight\victory.wav")
+    
+    LIGHTSABER_WHOOSH_SOUNDS = [init_sound("e:\\sounds\phonefight\Fastswing1.wav"),
+                     init_sound("e:\\sounds\phonefight\Fastswing2.wav"),
+                     init_sound("e:\\sounds\phonefight\Fastswing3.wav"),
+                     init_sound("e:\\sounds\phonefight\Fastswing4.wav"),
+                     init_sound("e:\\sounds\phonefight\Fastswing5.wav"),
+                     init_sound("e:\\sounds\phonefight\Fastswing6.wav"),
+                     init_sound("e:\\sounds\phonefight\Fastswing7.wav"),
+                     init_sound("e:\\sounds\phonefight\Fastswing8.wav")]
+
+    LIGHTSABER_DEATH_SOUND = init_sound("e:\\sounds\phonefight\death.wav")
+    
+    LIGHTSABER_HUM_SOUND = init_sound("e:\\sounds\phonefight\hum.wav")
+    
+    
+    # Load background images
+    LIGHTSABER_BACKGROUND='e:\\Python\\fight_bg_l.png'
+    SWORD_BACKGROUND='e:\\Python\\fight_bg_s.png'
+    
+
 
     # this is missing in python 2.2
     def zeros(n): return [0 for i in range(n)]
@@ -216,6 +265,8 @@ try:
             appuifw.app.exit_key_handler = self.quit
             appuifw.app.menu = [(u"Sound on", self.sound_on),
                                 (u"Sound off", self.sound_off),
+                                (u"Sword", self.sword_mode),
+                                (u"Saber", self.lightsaber_mode),
                                 (u"Exit", self.quit)]
 
             self.timer = e32.Ao_timer()
@@ -240,9 +291,31 @@ try:
         def sound_off(self):
             print "sound off"
             self.silent = True;
+            
+        def sword_mode(self):
+            ui.backgroundImage=ui.load_image(SWORD_BACKGROUND)
+            # Initiate the sounds
+            ui.startSound = SWORD_START_SOUND
+            ui.chingSounds = SWORD_CHING_SOUNDS
+            ui.hitSound = SWORD_HIT_SOUND
+            ui.whooshSounds = SWORD_WHOOSH_SOUNDS
+            ui.deathSound = SWORD_DEATH_SOUND
+            ui.humSound = SWORD_HUM_SOUND            
+            ui.update_ui
+            
+        def lightsaber_mode(self):
+            ui.backgroundImage=ui.load_image(LIGHTSABER_BACKGROUND)
+            # Initiate the sounds
+            ui.startSound = LIGHTSABER_START_SOUND
+            ui.chingSounds = LIGHTSABER_CHING_SOUNDS
+            ui.hitSound = LIGHTSABER_HIT_SOUND
+            ui.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
+            ui.deathSound = LIGHTSABER_DEATH_SOUND
+            ui.humSound = LIGHTSABER_HUM_SOUND    
+            ui.update_ui
 
         def play(self):
-            self.play_sound(START_SOUND)
+            self.play_sound(ui.startSound)
 
             while not self.game_over:
                 
@@ -326,12 +399,12 @@ try:
 
             if succeeded:
                 print "defence succeeded!"
-                self.play_sound(one_of(CHING_SOUNDS))
+                self.play_sound(one_of(ui.chingSounds))
             else:
                 self.health -= 1
                 if self.health:
                     print "you're hit, health now %d!" % self.health
-                    self.play_sound(HIT_SOUND)
+                    self.play_sound(ui.hitSound)
                     ui.trigger_hit()
                 else:
                     self.dead()
@@ -340,16 +413,16 @@ try:
             print "you lose!"                
             self.sock.send(VICTORY_MESSAGE)
             self.game_over = True
-            self.play_sound(DEATH_SOUND)
+            self.play_sound(ui.deathSound)
 
         def victory(self):
             print "you win!"                
-            #self.play_sound(VICTORY_SOUND)
+            #self.play_sound(ui.victorySound)
             self.game_over = True
             self.won = True
 
         def attack(self, event):
-            self.play_sound(one_of(WHOOSH_SOUNDS))
+            self.play_sound(one_of(ui.whooshSounds))
             if self.sock:
                 if event == OUTGOING_HORIZONTAL_ATTACK_EVENT:
                     message = HORIZONTAL_ATTACK_MESSAGE
