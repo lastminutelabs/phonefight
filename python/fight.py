@@ -30,10 +30,10 @@ except:
     pass
 
 
-class UI:
+# Everything is in a try block for safety reasons. stand back!
+try:
     
-    FRAME_INTERVAL=0.1
-    
+<<<<<<< HEAD:python/fight.py
     def __init__(self):
         
         # Initialize some properties
@@ -65,69 +65,169 @@ class UI:
         
         # Make sure that the background gets draw immediately
         self.handle_redraw(None)
+=======
+    class UI:
+>>>>>>> origin/ui:python/fight.py
         
-        # Start a refresh timer
-        self.timer=e32.Ao_timer()
-        self.timer.after(UI.FRAME_INTERVAL, self.update_ui)
+        FRAME_INTERVAL=0.1
         
-    def __del__(self):
-        self.timer.cancel()
-        
-    # Loads the specified image or returns a 1x1 blank image in case of an error
-    def load_image(self, src):
-        try:
-            return graphics.Image.open(src)
-        except:
-            return graphics.Image.new((1,1))
-        
-    # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it 
-    def load_mask_for(self, mask_src, image):
-        try:
-            width,height=image.size
-            mask=graphics.Image.new((width,height), '1')
-            mask.load(mask_src)
-            return mask
-        except:
-            return graphics.Image.new((1,1), '1')
-    
-    def update_ui(self):
-        self.handle_redraw(None)
-        self.timer.after(UI.FRAME_INTERVAL, self.update_ui)
-        
-    def handle_event(self, event):
-        self.handle_redraw(None)
-        
-    def trigger_hit(self):
-        self.hit_counter=100
-        pass
-        
-    def handle_redraw(self, rect=None):
-        if self.backgroundImage:
+        def __init__(self):
+            
+            # Initialize some properties
+            self.hit_counter=0
+            self.health=0
+            self.max_health=0
+            self.frame_number=0
+            self.playing=False
+                        
+            self.buffer=None
+            self.canvas=None
+            
+            # Initiate the sounds
+            self.startSound = LIGHTSABER_START_SOUND
+            self.chingSounds = LIGHTSABER_CHING_SOUNDS
+            self.hitSounds = LIGHTSABER_HIT_SOUNDS
+            self.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
+            self.deathSound = LIGHTSABER_DEATH_SOUND
+            self.humSound = LIGHTSABER_HUM_SOUND
+            
+            # Load the images
+            self.backgroundImage=self.__load_image(LIGHTSABER_BACKGROUND)
+            self.hitImage=self.__load_image('e:\\Python\\hit_1.png')
+            self.hitImageMask=self.__load_mask_for('e:\\Python\\hit_1_mask.png', self.hitImage)
+            
+            self.healthImages=[
+                                self.__load_image('e:\\Python\\health_1.png'),
+                                self.__load_image('e:\\Python\\health_2.png'),
+                                self.__load_image('e:\\Python\\health_3.png')
+                                ]
+            self.healthImageMasks=[
+                                self.__load_mask_for('e:\\Python\\health_1_mask.png',self.healthImages[0]),
+                                self.__load_mask_for('e:\\Python\\health_2_mask.png',self.healthImages[1]),
+                                self.__load_mask_for('e:\\Python\\health_3_mask.png',self.healthImages[2])
+                                ]
+            self.deadImage=self.__load_image('e:\\Python\\dead.png')
+            self.deadImageMask=self.__load_mask_for('e:\\Python\\dead_mask.png', self.deadImage)
+            self.wonImage=self.__load_image('e:\\Python\\won.png')
+            self.wonImageMask=self.__load_mask_for('e:\\Python\\won_mask.png', self.wonImage)
+            
+            # Create the canvas
+            appuifw.app.orientation='portrait'
+            appuifw.app.screen='large'
+            self.canvas=appuifw.Canvas ( redraw_callback=self.__handle_redraw, event_callback=self.__handle_event )
+            appuifw.app.body=self.canvas
+            
+            # Create an offscreen buffer - draw onto this in the __handle_redraw method and then blit onto the main canvas
+            self.buffer=graphics.Image.new(self.canvas.size)
+            
+            # Make sure that the background gets draw immediately
+            self.__handle_redraw(None)
+            
+            # Start a refresh timer
+            self.timer=e32.Ao_timer()
+            self.timer.after(UI.FRAME_INTERVAL, self.__update_ui)
+            
+        def __del__(self):
+            self.timer.cancel()
+            
+        # Loads the specified image or returns a 1x1 blank image in case of an error
+        def __load_image(self, src):
             try:
-                # Put the backgrounnd image in place
-                self.buffer.blit(self.backgroundImage)
-               
-                if (self.hit_counter>0):
-                    self.buffer.blit(self.hitImage, mask=self.hitImageMask)
-                    self.hit_counter-=FRAME_INTERVAL
-                else:
-                    self.hit_counter=0
-                
-                # Add your health and score
-                if (PRACTICE_MODE==play_mode):
-                    self.buffer.text((10,10), u"Practice mode", fill=0xffffff)
-                else:
-                    self.buffer.text((10,10), u"You're in a fight", fill=0xffffff)
+                img=graphics.Image.open(src)
+                return img
             except:
-                pass
+                img=graphics.Image.new((1,1))
+                print("Image "+src+" failed to load")
+                return img
+            
+        def load_image(self, src):
+            return self.__load_image(src)
+            
+        # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it 
+        def __load_mask_for(self, mask_src, image):
+            try:
+                width,height=image.size
+                mask=graphics.Image.new((width,height), '1')
+                mask.load(mask_src)
+                return mask
+            except:
+                img=graphics.Image.new((1,1), '1')
+                print ("Image "+mask_src+" not loaded (as mask)")
+                return img
+        
+        def __update_ui(self):
+            self.__handle_redraw(None)
+            self.timer.after(UI.FRAME_INTERVAL, self.__update_ui)
+            
+        def __handle_event(self, event):
+            #self.__handle_redraw(None)
+            pass
+            
+        def __handle_redraw(self, rect=None):
+            if self.canvas!=None and self.buffer!=None:
+                try:
+                    # Put the background image in place
+                    self.buffer.blit(self.backgroundImage)
+                except:
+                    pass
+                   
+                try:
+                    # Add your health, if we know it yet
+                    if self.max_health>0:
+                        if self.playing:
+                            healthImageNumber=int(math.ceil((float(self.health)/self.max_health) * (len(self.healthImages)-1)))
+                            self.buffer.blit(self.healthImages[healthImageNumber], mask=self.healthImageMasks[healthImageNumber])
+                        else:
+                            if self.won:
+                                self.buffer.blit(self.wonImage, mask=self.wonImageMask)
+                            else:
+                                self.buffer.blit(self.deadImage, mask=self.deadImageMask)
+                except:
+                    pass
+                
+                try:
+                    if self.hit_counter>0:
+                        self.buffer.blit(self.hitImage, mask=self.hitImageMask)
+                        self.hit_counter-=self.FRAME_INTERVAL
+                    else:
+                        self.hit_counter=0
+                except:
+                    pass
+                
+                #try:                        
+                #    # Add some text
+                #    if play_mode!=None:
+                #        if (PRACTICE_MODE==play_mode):
+                #            self.buffer.text((10,10), u"Practice mode", fill=0xffffff)
+                #        else:
+                #            self.buffer.text((10,10), u"You're in a fight", fill=0xffffff)
+                #except:
+                #    pass
 
-            # We always have _something_ to show on the canvas, even if the previous stuff failed at some point         
-            self.canvas.blit(self.buffer) 
-
-
-
-# everything is in a try block for safety reasons. stand back!
-try:
+                #self.buffer.text((10,100), u"frame number : "+str(self.frame_number), fill=0xffffff)
+                #self.frame_number+=1
+        
+                # We always have _something_ to show on the canvas, even if the previous stuff failed at some point         
+                self.canvas.blit(self.buffer) 
+                
+        def invalidate_ui(self):
+            # Maybe in the future this will set a flag - currently the ui redraws on each frame anyway
+            pass
+                
+        def start_anew(self, max_health):
+            self.max_health=max_health
+            self.health=max_health
+            self.playing=True
+    
+        def trigger_hit(self, new_health):
+            self.hit_counter=2
+            self.health=new_health
+            
+        def won_or_dead(self, have_we_won):
+            self.playing=False
+            self.won=have_we_won
+    
+    
     # this hardcoding is because bt_discover doesn't alway work
     # edit this if necessary
     PHONES = [("Athos", "00:18:32:E7:1B:60"),
@@ -177,7 +277,7 @@ try:
 
     def init_sound(path):
         s = audio.Sound.open(path)
-        s.set_volume(3)
+        s.set_volume(2)
         return s
 
     # Sword sounds
@@ -307,7 +407,7 @@ try:
             ui.whooshSounds = SWORD_WHOOSH_SOUNDS
             ui.deathSound = SWORD_DEATH_SOUND
             ui.humSound = SWORD_HUM_SOUND            
-            ui.update_ui
+            ui.invalidate_ui
             
         def lightsaber_mode(self):
             ui.backgroundImage=ui.load_image(LIGHTSABER_BACKGROUND)
@@ -319,9 +419,11 @@ try:
             ui.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
             ui.deathSound = LIGHTSABER_DEATH_SOUND
             ui.humSound = LIGHTSABER_HUM_SOUND    
-            ui.update_ui
+            ui.invalidate_ui
 
         def play(self):
+
+            ui.start_anew(self.health)
             self.play_sound(ui.startSound, True)
 
             while not self.game_over:
@@ -347,6 +449,8 @@ try:
             self.timer.cancel()
             axyz.disconnect()
             self.rotation_sensor.disconnect()
+            
+            ui.won_or_dead(self.won)
 
             return (self.won, self.quitting)
             
@@ -423,7 +527,7 @@ try:
                 if self.health:
                     print "you're hit, health now %d!" % self.health
                     self.play_sound(one_of(ui.hitSounds), True)
-                    ui.trigger_hit()
+                    ui.trigger_hit(self.health)
                 else:
                     self.dead()
 
@@ -530,6 +634,7 @@ try:
             return None
 
     # Initialize the UI
+    play_mode=None
     ui=UI()
 
     # Start a fight.
