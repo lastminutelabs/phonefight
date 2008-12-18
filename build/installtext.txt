@@ -1,0 +1,1 @@
+Phonefight requires some additional programs in order to be able to detect how you are moving the phone.  You will be asked to install these as well as part of the install process.
