@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd" [
+	<!ENTITY ns_flows "http://ns.adobe.com/Flows/1.0/">
+]>
+<svg version="1.1" baseProfile="tiny"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+	 x="0px" y="0px" width="16px" height="16px" viewBox="-0.11475 -0.1001 16 16" xml:space="preserve">
+<font horiz-adv-x="1000">
+<!-- DIN-Black is a trademark of FSI Fonts und Software GmbH -->
+<!-- Copyright: Copyright 2008 Adobe System Incorporated. All rights reserved. -->
+<font-face font-family="DINFunmongerBlack-Regular" units-per-em="1000" underline-position="-110" underline-thickness="51"/>
+<missing-glyph horiz-adv-x="579" d="M62,712l455,0l0,-712l-455,0M409,108l0,496l-239,0l0,-496z"/>
+<glyph unicode="l" horiz-adv-x="341" d="M57,712l164,0l0,-541C221,149 232,138 254,138l57,0l0,-138l-87,0C194,0 169,5 148,15C127,24 109,37 96,52C83,67 73,84 67,103C60,122 57,140 57,159z"/>
+<glyph unicode="m" horiz-adv-x="875" d="M62,538l160,0l0,-44C239,511 258,523 281,532C304,540 326,544 347,544C374,544 398,540 420,531C441,522 461,507 478,487C501,508 525,522 548,531C571,540 599,544 630,544C655,544 680,540 703,532C726,524 744,513 759,498C782,475 798,450 806,425C814,400 818,373 818,344l0,-344l-164,0l0,322C654,337 652,350 647,360C642,369 637,377 630,382C623,387 615,391 608,393C600,395 593,396 588,396C583,396 576,395 569,393C561,391 554,387 547,382C540,377 534,369 529,360C524,350 522,337 522,322l0,-322l-164,0l0,322C358,337 356,350 351,360C346,369 341,377 334,382C327,387 319,391 312,393C304,395 297,396 292,396C287,396 280,395 273,393C265,391 258,387 251,382C244,377 238,369 233,360C228,350 226,337 226,322l0,-322l-164,0z"/>
+</font>
+
+	<defs>
+</defs>
+<circle fill="#EC008C" cx="7.88306" cy="7.88281" r="7.88306"/>
+<text transform="matrix(0.99619 -0.08716 0.08716 0.99619 1.80273 11.60303)" fill="#FFFFFF" font-family="'DINFunmongerBlack-Regular'" font-size="10.5">lm</text>
+</svg>
