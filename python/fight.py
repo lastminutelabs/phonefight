@@ -22,6 +22,7 @@ import socket
 import sys
 import traceback
 import graphics
+import os
 
 # Misty lets us remove the screensave but we're OK without it
 try:
@@ -36,81 +37,93 @@ try:
         FRAME_INTERVAL=0.1
         
         DEFAULT_SOUND_VOLUME=2
+        SKINS_PATH="e:\\data\\phonefight\\skins"
         
         def __init__(self):
+          
+            # Check to see if skins directory exists
+            
+            if not os.path.exists(self.SKINS_PATH):
+              print "No skin directory found\n\nYou must download at least one skin to this phone"
+              return
+            else:
+              print "checking skins directory for skins..."
+              skinsArray = os.listdir(self.SKINS_PATH)
+              for skin in skinsArray:
+                print " Found skin: " + skin
 
-            # Create the skins
-            
-            print "Loading saber skin ..."
-            self.SABER_SKIN={
-                'startSound':     self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\start\\saber_start.wav"),
-                'chingSounds':    [self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\defense\\saberclash1.WAV"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\defense\\saberclash10.WAV"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\defense\\saberclash11.WAV"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\defense\\saberclash12.WAV"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\defense\\saberclash13.WAV"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\defense\\saberclash14.WAV"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\defense\\saberclash15.WAV")],
-                'hitSounds':      [self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\hit\\sabrhit2.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\hit\\sabrhit3.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\hit\\sabrhit4.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\hit\\sabrhit5.wav")],
-                'whooshSounds':    [self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\attack\\Fastswing1.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\attack\\Fastswing2.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\attack\\Fastswing3.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\attack\\Fastswing4.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\attack\\Fastswing5.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\attack\\Fastswing6.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\attack\\Fastswing7.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\attack\\Fastswing8.wav")],
-                'deathSound':     self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\death\\death.wav"),
-                'humSound':       self.__init_sound("e:\\data\\phonefight\\skins\\lightsaber\\sounds\\hum\\hum1.wav"),
-                'backgroundImage':self.__load_image('e:\\data\\phonefight\\skins\\lightsaber\\images\\fight_bg.png'),
-                'hitImage':       self.__load_image('e:\\data\\phonefight\\skins\\lightsaber\\images\\hit_1.png'),
-                'healthImages':   [self.__load_image('e:\\data\\phonefight\\skins\\lightsaber\\images\\health_1.png'),
-                                 self.__load_image('e:\\data\\phonefight\\skins\\lightsaber\\images\\health_2.png'),
-                                 self.__load_image('e:\\data\\phonefight\\skins\\lightsaber\\images\\health_3.png')],
-                'deadImage':      self.__load_image('e:\\data\\phonefight\\skins\\lightsaber\\images\\dead.png'),
-                'wonImage':       self.__load_image('e:\\data\\phonefight\\skins\\lightsaber\\images\\won.png')
-                            }
-            self.SABER_SKIN['hitImageMask']=         self.__load_mask_for('e:\\data\\phonefight\\skins\\lightsaber\\images\\hit_1_mask.png', self.SABER_SKIN['hitImage'])
-            self.SABER_SKIN['healthImageMasks']=    [self.__load_mask_for('e:\\data\\phonefight\\skins\\lightsaber\\images\\health_1_mask.png',self.SABER_SKIN['healthImages'][0]),
-                                                     self.__load_mask_for('e:\\data\\phonefight\\skins\\lightsaber\\images\\health_2_mask.png',self.SABER_SKIN['healthImages'][1]),
-                                                     self.__load_mask_for('e:\\data\\phonefight\\skins\\lightsaber\\images\\health_3_mask.png',self.SABER_SKIN['healthImages'][2])]
-            self.SABER_SKIN['deadImageMask']=        self.__load_mask_for('e:\\data\\phonefight\\skins\\lightsaber\\images\\dead_mask.png', self.SABER_SKIN['deadImage'])
-            self.SABER_SKIN['wonImageMask']=         self.__load_mask_for('e:\\data\\phonefight\\skins\\lightsaber\\images\\won_mask.png', self.SABER_SKIN['wonImage'])
-            
-            print "Loading sword skin ..."
-            self.SWORD_SKIN={
-                'startSound':     self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\start.wav"),
-                'chingSounds':    [self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\ching1.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\ching2.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\ching3.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\ching4.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\ching5.wav")],
-                'hitSounds':      [self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\hit.wav")],
-                'whooshSounds':    [self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\whoosh1.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\whoosh2.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\whoosh3.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\whoosh4.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\whoosh5.wav"),
-                                 self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\whoosh6.wav")],
-                'deathSound':     self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\death.wav"),
-                'humSound':       self.__init_sound("e:\\data\\phonefight\\skins\\sword\\sounds\\silence.wav"),
-                'backgroundImage':self.__load_image('e:\\data\\phonefight\\skins\\sword\\images\\fight_bg.png'),
-                'hitImage':       self.__load_image('e:\\data\\phonefight\\skins\\sword\\images\\hit_1.png'),
-                'healthImages':   [self.__load_image('e:\\data\\phonefight\\skins\\sword\\images\\health_1.png'),
-                                 self.__load_image('e:\\data\\phonefight\\skins\\sword\\images\\health_2.png'),
-                                 self.__load_image('e:\\data\\phonefight\\skins\\sword\\images\\health_3.png')],
-                'deadImage':      self.__load_image('e:\\data\\phonefight\\skins\\sword\\images\\dead.png'),
-                'wonImage':       self.__load_image('e:\\data\\phonefight\\skins\\sword\\images\\won.png')
-                            }
-            self.SWORD_SKIN['hitImageMask']=         self.__load_mask_for('e:\\data\\phonefight\\skins\\sword\\images\\hit_1_mask.png', self.SWORD_SKIN['hitImage'])
-            self.SWORD_SKIN['healthImageMasks']=    [self.__load_mask_for('e:\\data\\phonefight\\skins\\sword\\images\\health_1_mask.png',self.SWORD_SKIN['healthImages'][0]),
-                                                     self.__load_mask_for('e:\\data\\phonefight\\skins\\sword\\images\\health_2_mask.png',self.SWORD_SKIN['healthImages'][1]),
-                                                     self.__load_mask_for('e:\\data\\phonefight\\skins\\sword\\images\\health_3_mask.png',self.SWORD_SKIN['healthImages'][2])]
-            self.SWORD_SKIN['deadImageMask']=        self.__load_mask_for('e:\\data\\phonefight\\skins\\sword\\images\\dead_mask.png', self.SWORD_SKIN['deadImage'])
-            self.SWORD_SKIN['wonImageMask']=         self.__load_mask_for('e:\\data\\phonefight\\skins\\sword\\images\\won_mask.png', self.SWORD_SKIN['wonImage'])
+              # Create the skins
+              
+              print "Loading saber skin ..."
+              self.SABER_SKIN={
+                  'startSound':     self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\start\\saber_start.wav"),
+                  'chingSounds':    [self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash1.WAV"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash10.WAV"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash11.WAV"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash12.WAV"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash13.WAV"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash14.WAV"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash15.WAV")],
+                  'hitSounds':      [self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hit\\sabrhit2.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hit\\sabrhit3.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hit\\sabrhit4.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hit\\sabrhit5.wav")],
+                  'whooshSounds':    [self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing1.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing2.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing3.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing4.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing5.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing6.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing7.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing8.wav")],
+                  'deathSound':     self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\death\\death.wav"),
+                  'humSound':       self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hum\\hum1.wav"),
+                  'backgroundImage':self.__load_image(self.SKINS_PATH = '\\lightsaber\\images\\fight_bg.png'),
+                  'hitImage':       self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\hit_1.png'),
+                  'healthImages':   [self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\health_1.png'),
+                                  self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\health_2.png'),
+                                  self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\health_3.png')],
+                  'deadImage':      self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\dead.png'),
+                  'wonImage':       self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\won.png')
+                              }
+              self.SABER_SKIN['hitImageMask']=         self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\hit_1_mask.png', self.SABER_SKIN['hitImage'])
+              self.SABER_SKIN['healthImageMasks']=    [self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\health_1_mask.png',self.SABER_SKIN['healthImages'][0]),
+                                                      self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\health_2_mask.png',self.SABER_SKIN['healthImages'][1]),
+                                                      self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\health_3_mask.png',self.SABER_SKIN['healthImages'][2])]
+              self.SABER_SKIN['deadImageMask']=        self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\dead_mask.png', self.SABER_SKIN['deadImage'])
+              self.SABER_SKIN['wonImageMask']=         self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\won_mask.png', self.SABER_SKIN['wonImage'])
+              
+              print "Loading sword skin ..."
+              self.SWORD_SKIN={
+                  'startSound':     self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\start.wav"),
+                  'chingSounds':    [self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching1.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching2.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching3.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching4.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching5.wav")],
+                  'hitSounds':      [self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\hit.wav")],
+                  'whooshSounds':    [self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh1.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh2.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh3.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh4.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh5.wav"),
+                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh6.wav")],
+                  'deathSound':     self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\death.wav"),
+                  'humSound':       self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\silence.wav"),
+                  'backgroundImage':self.__load_image(self.SKINS_PATH + '\\sword\\images\\fight_bg.png'),
+                  'hitImage':       self.__load_image(self.SKINS_PATH + '\\sword\\images\\hit_1.png'),
+                  'healthImages':   [self.__load_image(self.SKINS_PATH + '\\sword\\images\\health_1.png'),
+                                  self.__load_image(self.SKINS_PATH + '\\sword\\images\\health_2.png'),
+                                  self.__load_image(self.SKINS_PATH + '\\sword\\images\\health_3.png')],
+                  'deadImage':      self.__load_image(self.SKINS_PATH + '\\sword\\images\\dead.png'),
+                  'wonImage':       self.__load_image(self.SKINS_PATH + '\\sword\\images\\won.png')
+                              }
+              self.SWORD_SKIN['hitImageMask']=         self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\hit_1_mask.png', self.SWORD_SKIN['hitImage'])
+              self.SWORD_SKIN['healthImageMasks']=    [self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\health_1_mask.png',self.SWORD_SKIN['healthImages'][0]),
+                                                      self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\health_2_mask.png',self.SWORD_SKIN['healthImages'][1]),
+                                                      self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\health_3_mask.png',self.SWORD_SKIN['healthImages'][2])]
+              self.SWORD_SKIN['deadImageMask']=        self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\dead_mask.png', self.SWORD_SKIN['deadImage'])
+              self.SWORD_SKIN['wonImageMask']=         self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\won_mask.png', self.SWORD_SKIN['wonImage'])
 
             # Initialize some properties
             self.hit_counter=0
@@ -124,15 +137,8 @@ try:
                         
             self.buffer=None
             self.canvas=None
-            
-            # Initiate the sounds
-#            self.startSound = self.skin['startSound']
-#            self.chingSounds = LIGHTSABER_CHING_SOUNDS
-#            self.hitSounds = LIGHTSABER_HIT_SOUNDS
-#            self.whooshSounds = LIGHTSABER_WHOOSH_SOUNDS
-#            self.deathSound = LIGHTSABER_DEATH_SOUND
-#            self.humSound = LIGHTSABER_HUM_SOUND
-           
+
+            # uncomment the return to disable the graphical UI
             return
            
             # Create the canvas
