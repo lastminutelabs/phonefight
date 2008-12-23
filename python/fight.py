@@ -35,95 +35,59 @@ except:
 try:
     class UI:
         FRAME_INTERVAL=0.1
-        
+
         DEFAULT_SOUND_VOLUME=2
-        SKINS_PATH="e:\\data\\phonefight\\skins"
-        
+        SKINS_PATH="e:\\data\\phonefight\\skins\\"
+
+
+
         def __init__(self):
-          
+
             # Check to see if skins directory exists
-            
+
             if not os.path.exists(self.SKINS_PATH):
               print "No skin directory found\n\nYou must download at least one skin to this phone"
               return
             else:
+              skins_path = self.SKINS_PATH
               print "checking skins directory for skins..."
-              skinsArray = os.listdir(self.SKINS_PATH)
+              skinsArray = os.listdir(skins_path)
+
+              self.SKINS=[]
+              ndx = 0
               for skin in skinsArray:
                 print " Found skin: " + skin
+                self.SKINS.append( {
+                  'skinName'   : skin,
+                  'startSounds': self.__init_sounds(skins_path + skin + "\\sounds\\start\\"),
+                  'chingSounds': self.__init_sounds(skins_path + skin + "\\sounds\\defense\\"),
+                  'hitSounds':   self.__init_sounds(skins_path + skin + "\\sounds\\hit\\"),
+                  'whooshSounds':self.__init_sounds(skins_path + skin + "\\sounds\\attack\\"),
+                  'deathSounds': self.__init_sounds(skins_path + skin + "\\sounds\\death\\"),
+                  'humSounds':   self.__init_sounds(skins_path + skin + "\\sounds\\hum\\"),
 
-              # Create the skins
-              
-              print "Loading saber skin ..."
-              self.SABER_SKIN={
-                  'startSound':     self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\start\\saber_start.wav"),
-                  'chingSounds':    [self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash1.WAV"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash10.WAV"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash11.WAV"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash12.WAV"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash13.WAV"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash14.WAV"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\defense\\saberclash15.WAV")],
-                  'hitSounds':      [self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hit\\sabrhit2.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hit\\sabrhit3.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hit\\sabrhit4.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hit\\sabrhit5.wav")],
-                  'whooshSounds':    [self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing1.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing2.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing3.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing4.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing5.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing6.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing7.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\attack\\Fastswing8.wav")],
-                  'deathSound':     self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\death\\death.wav"),
-                  'humSound':       self.__init_sound(self.SKINS_PATH + "\\lightsaber\\sounds\\hum\\hum1.wav"),
-                  'backgroundImage':self.__load_image(self.SKINS_PATH = '\\lightsaber\\images\\fight_bg.png'),
-                  'hitImage':       self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\hit_1.png'),
-                  'healthImages':   [self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\health_1.png'),
-                                  self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\health_2.png'),
-                                  self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\health_3.png')],
-                  'deadImage':      self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\dead.png'),
-                  'wonImage':       self.__load_image(self.SKINS_PATH + '\\lightsaber\\images\\won.png')
+
+                  'backgroundImage':self.__load_image(skins_path + skin + '\\images\\fight_bg.png'),
+                  'hitImage':       self.__load_image(skins_path + skin + '\\images\\hit_1.png'),
+                  'healthImages':   [self.__load_image(skins_path + skin + '\\images\\health_1.png'),
+                                  self.__load_image(skins_path  + skin + '\\images\\health_2.png'),
+                                  self.__load_image(skins_path  + skin + '\\images\\health_3.png')],
+                  'deadImage':      self.__load_image(skins_path + skin + '\\images\\dead.png'),
+                  'wonImage':       self.__load_image(skins_path  + skin + '\\images\\won.png')
                               }
-              self.SABER_SKIN['hitImageMask']=         self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\hit_1_mask.png', self.SABER_SKIN['hitImage'])
-              self.SABER_SKIN['healthImageMasks']=    [self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\health_1_mask.png',self.SABER_SKIN['healthImages'][0]),
-                                                      self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\health_2_mask.png',self.SABER_SKIN['healthImages'][1]),
-                                                      self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\health_3_mask.png',self.SABER_SKIN['healthImages'][2])]
-              self.SABER_SKIN['deadImageMask']=        self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\dead_mask.png', self.SABER_SKIN['deadImage'])
-              self.SABER_SKIN['wonImageMask']=         self.__load_mask_for(self.SKINS_PATH + '\\lightsaber\\images\\won_mask.png', self.SABER_SKIN['wonImage'])
-              
-              print "Loading sword skin ..."
-              self.SWORD_SKIN={
-                  'startSound':     self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\start.wav"),
-                  'chingSounds':    [self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching1.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching2.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching3.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching4.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\ching5.wav")],
-                  'hitSounds':      [self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\hit.wav")],
-                  'whooshSounds':    [self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh1.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh2.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh3.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh4.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh5.wav"),
-                                  self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\whoosh6.wav")],
-                  'deathSound':     self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\death.wav"),
-                  'humSound':       self.__init_sound(self.SKINS_PATH + "\\sword\\sounds\\silence.wav"),
-                  'backgroundImage':self.__load_image(self.SKINS_PATH + '\\sword\\images\\fight_bg.png'),
-                  'hitImage':       self.__load_image(self.SKINS_PATH + '\\sword\\images\\hit_1.png'),
-                  'healthImages':   [self.__load_image(self.SKINS_PATH + '\\sword\\images\\health_1.png'),
-                                  self.__load_image(self.SKINS_PATH + '\\sword\\images\\health_2.png'),
-                                  self.__load_image(self.SKINS_PATH + '\\sword\\images\\health_3.png')],
-                  'deadImage':      self.__load_image(self.SKINS_PATH + '\\sword\\images\\dead.png'),
-                  'wonImage':       self.__load_image(self.SKINS_PATH + '\\sword\\images\\won.png')
-                              }
-              self.SWORD_SKIN['hitImageMask']=         self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\hit_1_mask.png', self.SWORD_SKIN['hitImage'])
-              self.SWORD_SKIN['healthImageMasks']=    [self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\health_1_mask.png',self.SWORD_SKIN['healthImages'][0]),
-                                                      self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\health_2_mask.png',self.SWORD_SKIN['healthImages'][1]),
-                                                      self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\health_3_mask.png',self.SWORD_SKIN['healthImages'][2])]
-              self.SWORD_SKIN['deadImageMask']=        self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\dead_mask.png', self.SWORD_SKIN['deadImage'])
-              self.SWORD_SKIN['wonImageMask']=         self.__load_mask_for(self.SKINS_PATH + '\\sword\\images\\won_mask.png', self.SWORD_SKIN['wonImage'])
+                )
+
+                # Add masks seperately ( is this necessary? )
+                self.SKINS[ndx]['hitImageMask']=         self.__load_mask_for(skins_path  + skin + '\\images\\hit_1_mask.png', self.SKINS[ndx]['hitImage'])
+                self.SKINS[ndx]['healthImageMasks']=    [self.__load_mask_for(skins_path  + skin + '\\images\\health_1_mask.png',self.SKINS[ndx]['healthImages'][0]),
+                                                        self.__load_mask_for(skins_path  + skin + '\\images\\health_2_mask.png',self.SKINS[ndx]['healthImages'][1]),
+                                                        self.__load_mask_for(skins_path  + skin + '\\images\\health_3_mask.png',self.SKINS[ndx]['healthImages'][2])]
+                self.SKINS[ndx]['deadImageMask']=        self.__load_mask_for(skins_path  + skin + '\\images\\dead_mask.png', self.SKINS[ndx]['deadImage'])
+                self.SKINS[ndx]['wonImageMask']=         self.__load_mask_for(skins_path  + skin + '\\images\\won_mask.png', self.SKINS[ndx]['wonImage'])
+
+                ndx = ndx + 1
+
+
 
             # Initialize some properties
             self.hit_counter=0
@@ -132,34 +96,35 @@ try:
             self.frame_number=0
             self.playing=False
             self.silent=False
-            
-            self.skin=self.SABER_SKIN
-                        
+
+            self.skin=self.SKINS[0]
+            print "--Skin:" + self.skin["skinName"]
+
             self.buffer=None
             self.canvas=None
 
             # uncomment the return to disable the graphical UI
             return
-           
+
             # Create the canvas
             appuifw.app.orientation='portrait'
             appuifw.app.screen='large'
             self.canvas=appuifw.Canvas ( redraw_callback=self.__handle_redraw, event_callback=self.__handle_event )
             appuifw.app.body=self.canvas
-            
+
             # Create an offscreen buffer - draw onto this in the __handle_redraw method and then blit onto the main canvas
             self.buffer=graphics.Image.new(self.canvas.size)
-            
+
             # Make sure that the background gets draw immediately
             self.__handle_redraw(None)
-            
+
             # Start a refresh timer
             self.timer=e32.Ao_timer()
             self.timer.after(UI.FRAME_INTERVAL, self.__update_ui)
-            
+
         def __del__(self):
             self.timer.cancel()
-            
+
         # Loads the specified image or returns a 1x1 blank image in case of an error
         def __load_image(self, src):
             try:
@@ -169,7 +134,7 @@ try:
                 img=graphics.Image.new((1,1))
                 print("Image "+src+" failed to load")
                 return img
-        
+
         def __init_sound(self, path):
             try:
                 s = audio.Sound.open(path)
@@ -178,8 +143,19 @@ try:
             except:
                 print "Warning - sound sample "+path+" not found"
                 return None
-            
-        # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it 
+
+        def __init_sounds(self, path):
+            sounds = []
+            try:
+               listing = os.listdir(path)
+               print "  getting listing from "+path+"."
+               return map(lambda f: self.__init_sound((path + f)), listing )
+            except:
+               print "Warning - error loading sounds from "+path
+               return None
+
+
+        # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it
         def __load_mask_for(self, mask_src, image):
             try:
                 width,height=image.size
@@ -190,15 +166,15 @@ try:
                 img=graphics.Image.new((1,1), '1')
                 print ("Image "+mask_src+" not loaded (as mask)")
                 return img
-        
+
         def __update_ui(self):
             self.__handle_redraw(None)
             self.timer.after(UI.FRAME_INTERVAL, self.__update_ui)
-            
+
         def __handle_event(self, event):
             #self.__handle_redraw(None)
             pass
-            
+
         def __handle_redraw(self, rect=None):
             if self.canvas!=None and self.buffer!=None:
                 try:
@@ -206,7 +182,7 @@ try:
                     self.buffer.blit(self.skin['backgroundImage'])
                 except:
                     pass
-                   
+
                 try:
                     # Add your health, if we know it yet
                     if self.max_health>0:
@@ -220,7 +196,7 @@ try:
                                 self.buffer.blit(self.skin['deadImage'], mask=self.skin['deadImageMask'])
                 except:
                     pass
-                
+
                 try:
                     if self.hit_counter>0:
                         self.buffer.blit(self.skin['hitImage'], mask=self.skin['hitImageMask'])
@@ -229,8 +205,8 @@ try:
                         self.hit_counter=0
                 except:
                     pass
-                
-                #try:                        
+
+                #try:
                 #    # Add some text
                 #    if play_mode!=None:
                 #        if (PRACTICE_MODE==play_mode):
@@ -242,15 +218,18 @@ try:
 
                 #self.buffer.text((10,100), u"frame number : "+str(self.frame_number), fill=0xffffff)
                 #self.frame_number+=1
-        
-                # We always have _something_ to show on the canvas, even if the previous stuff failed at some point         
-                self.canvas.blit(self.buffer) 
-                
+
+                # We always have _something_ to show on the canvas, even if the previous stuff failed at some point
+                self.canvas.blit(self.buffer)
+
         def __hum_callback(self, prev_state, current_state, error):
             if prev_state == audio.EPlaying and current_state==audio.EOpen:
-                ui.skin['humSound'].stop()
-                ui.skin['humSound'].play(times = 600)
-        
+                try:
+                    ui.skin['humSounds'][0].stop()
+                except:
+                    print "no hum sound playing"
+                ui.skin['humSounds'][0].play(times = 600)
+
         def play_sound(self, sound, hum=False):
             if not self.silent:
                 try:
@@ -261,25 +240,25 @@ try:
                         sound.play(times=1)
                 except:
                     pass
-                
+
         def invalidate_ui(self):
             # Maybe in the future this will set a flag - currently the ui redraws on each frame anyway
             pass
-                
+
         def start_anew(self, max_health):
             self.max_health=max_health
             self.health=max_health
             self.playing=True
-    
+
         def trigger_hit(self, new_health):
             self.hit_counter=2
             self.health=new_health
-            
+
         def won_or_dead(self, have_we_won):
             self.playing=False
             self.won=have_we_won
-    
-    
+
+
     # this hardcoding is because bt_discover doesn't alway work
     # edit this if necessary
     PHONES = [("Athos", "00:18:32:E7:1B:60"),
@@ -294,12 +273,12 @@ try:
     BT_SERVICE_NAME = u"lastminute.com labs PhoneFight v0"
 
     # that bluetooth phonefight protocol in full
-    HORIZONTAL_ATTACK_MESSAGE, VERTICAL_ATTACK_MESSAGE, VICTORY_MESSAGE = 'H', 'V', 'W' 
+    HORIZONTAL_ATTACK_MESSAGE, VERTICAL_ATTACK_MESSAGE, VICTORY_MESSAGE = 'H', 'V', 'W'
 
     # how many magnitude/orientation samples to keep
     HISTORY_SIZE = 16
 
-    # how healthy is our player to begin with        
+    # how healthy is our player to begin with
     INITIAL_HEALTH = 10
 
     # can't attack again within this many seconds
@@ -312,7 +291,7 @@ try:
     ATTACK_THRESHOLD = 100
 
     # modes of play
-    CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE = 0, 1, 2 
+    CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE = 0, 1, 2
 
     # event types
     (INCOMING_HORIZONTAL_ATTACK_EVENT, INCOMING_VERTICAL_ATTACK_EVENT,
@@ -326,10 +305,10 @@ try:
                              sensor.orientation.BOTTOM: "bottom"}
 
 
-    
+
     # this is missing in python 2.2
     def zeros(n): return [0 for i in range(n)]
-    
+
     def one_of(a):
         return a[random.randint(0,len(a) - 1)]
 
@@ -338,7 +317,7 @@ try:
         def __init__(self, play_mode, sock):
             self.play_mode = play_mode
             self.sock = sock
-            
+
             self.orientation = sensor.orientation.TOP
             self.won = False
             self.elapsed_time = 0.0
@@ -351,20 +330,23 @@ try:
             self.game_over = False
             self.quitting = False
 
+
             appuifw.app.exit_key_handler = self.quit
             appuifw.app.menu = [(u"Sound on", self.sound_on),
                                 (u"Sound off", self.sound_off),
                                 (u"Sword", self.sword_mode),
-                                (u"Saber", self.lightsaber_mode),
+                                (u"Lightsaber", self.lightsaber_mode),
                                 (u"Exit", self.quit)]
+
+            # appuifw.app.menu =  appuifw.app.menu + skins_for_menu
 
             self.timer = e32.Ao_timer()
 
             self.event = None
             self.eventlock = e32.Ao_lock()
-            
+
             axyz.connect(self.new_accel_data)
-            
+
             sensor_type = sensor.sensors()['RotSensor']
             self.rotation_sensor = sensor.Sensor(sensor_type['id'],
                                                  sensor_type['category'])
@@ -378,23 +360,27 @@ try:
 
         def sound_off(self):
             ui.silent = True;
-            
+
         def sword_mode(self):
-            ui.skin=ui.SWORD_SKIN
-            
+            ui.skin['humSounds'][0].stop()
+            ui.skin=ui.SKINS[1]
+            ui.play_sound(one_of(ui.skin['startSounds']), True)
+
         def lightsaber_mode(self):
-            ui.skin=ui.SABER_SKIN
+            ui.skin['humSounds'][0].stop()
+            ui.skin=ui.SKINS[0]
+            ui.play_sound(one_of(ui.skin['startSounds']), True)
 
         def play(self):
             ui.start_anew(self.health)
-            ui.play_sound(ui.skin['startSound'], True)
+            ui.play_sound(one_of(ui.skin['startSounds']), True)
 
             while not self.game_over:
-                
+
                 # Stop the screensaver coming on (if we have the misty module present)
                 if globals().__contains__('misty'):
                     misty.reset_inactivity_time()
-                
+
                 self.eventlock.wait()
                 if self.event == INCOMING_HORIZONTAL_ATTACK_EVENT:
                     self.defend(self.event)
@@ -412,14 +398,14 @@ try:
             self.timer.cancel()
             axyz.disconnect()
             self.rotation_sensor.disconnect()
-            
+
             ui.won_or_dead(self.won)
 
             return (self.won, self.quitting)
-            
+
         def quit(self):
             self.game_over = True
-            self.quitting = True            
+            self.quitting = True
             self.eventlock.signal()
 
         def new_rotation_data(self, orientation):
@@ -438,7 +424,7 @@ try:
             if now > (self.last_attack + QUIET_INTERVAL) and magnitude > ATTACK_THRESHOLD:
                 # index is now pointing to an event in the recent past
                 orientation_then = self.orientation_history[self.index]
-                
+
                 if (orientation_then == sensor.orientation.LEFT
                     or orientation_then == sensor.orientation.RIGHT):
                     print "outgoing horizontal attack"
@@ -446,11 +432,11 @@ try:
                 else:
                     print "outgoing vertical attack"
                     self.event = OUTGOING_VERTICAL_ATTACK_EVENT
-                    
+
                 #print "(orientation was %s, last attack %.2f, time now %.2f)" \
                 # % (ORIENTATION_AS_STRING[orientation_then], self.last_attack, now)
                 self.last_attack = now
-                
+
                 self.eventlock.signal()
 
         def defend(self, event):
@@ -476,13 +462,13 @@ try:
                     self.dead()
 
         def dead(self):
-            print "you lose!"                
+            print "you lose!"
             self.sock.send(VICTORY_MESSAGE)
             self.game_over = True
-            ui.play_sound(ui.skin['deathSound'])
+            ui.play_sound(one_of(ui.skin['deathSounds']), True)
 
         def victory(self):
-            print "you win!"                
+            print "you win!"
             #self.play_sound(ui.skin['victorySound'])
             self.game_over = True
             self.won = True
@@ -493,21 +479,21 @@ try:
                 if event == OUTGOING_HORIZONTAL_ATTACK_EVENT:
                     message = HORIZONTAL_ATTACK_MESSAGE
                 else:
-                    message = VERTICAL_ATTACK_MESSAGE                    
-                
+                    message = VERTICAL_ATTACK_MESSAGE
+
                 print "sending: %s" % message
                 self.sock.send(message)
 
         def tick(self):
             self.elapsed_time += TICK_INTERVAL
             self.timer.after(TICK_INTERVAL, self.tick)
-            
+
             if self.sock:
                 try:
                     message = self.sock.recv(1)
                     if message:
                         event = None
-                    
+
                         if message == HORIZONTAL_ATTACK_MESSAGE:
                             event = INCOMING_HORIZONTAL_ATTACK_EVENT
                         elif message == VERTICAL_ATTACK_MESSAGE:
@@ -521,7 +507,7 @@ try:
 
                 except:
                     pass
-                
+
 
     def server_socket():
         server = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
@@ -539,13 +525,13 @@ try:
     def client_socket():
         conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
         print "discovering..."
-        try: 
+        try:
             address, services = socket.bt_discover() # CRASHES!?
         except:
             print "\n".join(traceback.format_exception(*sys.exc_info()))
-            appuifw.note(u"Cannot connect. Sorry.", "error")            
+            appuifw.note(u"Cannot connect. Sorry.", "error")
             return None
-            
+
         print "found services..."
         if BT_SERVICE_NAME in services:
             print "service available..."
@@ -555,26 +541,26 @@ try:
             print "connected to server!"
             return conn
         else:
-            print "\n".join(services)            
+            print "\n".join(services)
             appuifw.note(u"Target is not running a Phone Fight server" % BT_SERVICE_NAME,
                          "error")
             return None
 
     def client_socket_hack():
         conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
-        phone = appuifw.popup_menu(PHONE_NAMES, u"Phone:")    
+        phone = appuifw.popup_menu(PHONE_NAMES, u"Phone:")
         channel = 5 #probably
         try:
             conn.connect((PHONE_ADDRESSES[phone], channel))
             return conn
         except:
-            channel = appuifw.query(u"Channel number:", "number")            
+            channel = appuifw.query(u"Channel number:", "number")
 
         try:
             conn.connect((PHONE_ADDRESSES[phone], channel))
             return conn
         except:
-            appuifw.note(u"Cannot connect. Sorry.", "error")            
+            appuifw.note(u"Cannot connect. Sorry.", "error")
             return None
 
     # Initialize the UI
@@ -588,7 +574,7 @@ try:
                                    u"Select mode of play")
 
     sock = None
-    
+
     if play_mode == PRACTICE_MODE:
         print "PRACTICE MODE"
         fight = Fight(play_mode, None)
@@ -609,7 +595,7 @@ try:
             playing = True
 
             while playing:
-                print "FIGHT!"            
+                print "FIGHT!"
                 fight = Fight(play_mode, sock)
                 (won, quitting) = fight.play()
 
@@ -625,7 +611,7 @@ try:
             sock.close()
 
     appuifw.app.set_exit()
-    
+
 except:
     import appuifw
     import sys
