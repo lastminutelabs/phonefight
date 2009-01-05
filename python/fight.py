@@ -36,7 +36,7 @@ try:
     class UI:
         FRAME_INTERVAL=0.1
 
-        DEFAULT_SOUND_VOLUME=2
+        DEFAULT_SOUND_VOLUME=3
         SKINS_PATH="e:\\data\\phonefight\\skins\\"
 
 
@@ -107,7 +107,7 @@ try:
             self.canvas=None
 
             # uncomment the return to disable the graphical UI
-            # return
+            return
 
             # Create the canvas
             appuifw.app.orientation='portrait'
@@ -335,10 +335,9 @@ try:
 
 
             appuifw.app.exit_key_handler = self.quit
-            appuifw.app.menu = [(u"Sound on", self.sound_on),
+            appuifw.app.menu = [(unicode(skin["skinName"]), self.skin_changer(skin)) for skin in ui.SKINS] + \
+                               [(u"Sound on", self.sound_on),
                                 (u"Sound off", self.sound_off),
-                                (u"Sword", self.sword_mode),
-                                (u"Lightsaber", self.lightsaber_mode),
                                 (u"Exit", self.quit)]
 
             # appuifw.app.menu =  appuifw.app.menu + skins_for_menu
@@ -358,22 +357,21 @@ try:
 
             self.tick()
 
+        def skin_changer(self, skin):
+            return lambda: self.weapon_mode(skin)
+
         def sound_on(self):
             ui.silent = False;
 
         def sound_off(self):
             ui.silent = True;
-
-        def sword_mode(self):
+            
+        def weapon_mode(self, skin):
             ui.skin['humSounds'][0].stop()
-            ui.skin=ui.SKINS[1]
+            print " changing skin: " + skin["skinName"] 
+            ui.skin=skin
             ui.play_sound(one_of(ui.skin['startSounds']), True)
-
-        def lightsaber_mode(self):
-            ui.skin['humSounds'][0].stop()
-            ui.skin=ui.SKINS[0]
-            ui.play_sound(one_of(ui.skin['startSounds']), True)
-
+            
         def play(self):
             ui.start_anew(self.health)
             ui.play_sound(one_of(ui.skin['startSounds']), True)
