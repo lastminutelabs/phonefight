@@ -260,6 +260,17 @@ try:
         def won_or_dead(self, have_we_won):
             self.playing=False
             self.won=have_we_won
+            
+        def set_skin(self, new_skin):
+            # TODO: make sure that NONE of the humsounds are playing... currently we assume that there's only one
+            # .wav file in the /hum/ directory.
+            self.skin['humSounds'][0].stop()
+            print " Changing skin: " + new_skin["skinName"] 
+            self.skin=new_skin
+            self.play_sound(one_of(self.skin['startSounds']), True)            
+
+
+
 
 
     # this hardcoding is because bt_discover doesn't alway work
@@ -335,7 +346,7 @@ try:
 
 
             appuifw.app.exit_key_handler = self.quit
-            appuifw.app.menu = [(unicode(skin["skinName"]), self.skin_changer(skin)) for skin in ui.SKINS] + \
+            appuifw.app.menu = [(unicode(skin["skinName"].title()), self.skin_changer(skin)) for skin in ui.SKINS] + \
                                [(u"Sound on", self.sound_on),
                                 (u"Sound off", self.sound_off),
                                 (u"Exit", self.quit)]
@@ -363,13 +374,7 @@ try:
         # a static copy of the values in the ui.SKINS array.  This function below creates the
         # lambda function with a static copy of the skins.
         def skin_changer(self, skin):
-            return lambda: self.weapon_mode(skin)
-            
-        def weapon_mode(self, skin):
-            ui.skin['humSounds'][0].stop()
-            print " changing skin: " + skin["skinName"] 
-            ui.skin=skin
-            ui.play_sound(one_of(ui.skin['startSounds']), True)
+            return lambda: ui.set_skin(skin)
 
         def sound_on(self):
             ui.silent = False;
