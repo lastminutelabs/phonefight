@@ -107,7 +107,7 @@ try:
             self.canvas=None
 
             # uncomment the return to disable the graphical UI
-            return
+            # return
 
             # Create the canvas
             appuifw.app.orientation='portrait'
@@ -357,20 +357,25 @@ try:
 
             self.tick()
 
+        # closures in python are wrong if you expect them to reference a snapshot, correct
+        # if you expect them to reference a reference.  This is why when we create the menu a
+        # few lines above, we end up using a generator function - because we want them to reference
+        # a static copy of the values in the ui.SKINS array.  This function below creates the
+        # lambda function with a static copy of the skins.
         def skin_changer(self, skin):
             return lambda: self.weapon_mode(skin)
-
-        def sound_on(self):
-            ui.silent = False;
-
-        def sound_off(self):
-            ui.silent = True;
             
         def weapon_mode(self, skin):
             ui.skin['humSounds'][0].stop()
             print " changing skin: " + skin["skinName"] 
             ui.skin=skin
             ui.play_sound(one_of(ui.skin['startSounds']), True)
+
+        def sound_on(self):
+            ui.silent = False;
+
+        def sound_off(self):
+            ui.silent = True;
             
         def play(self):
             ui.start_anew(self.health)
