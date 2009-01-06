@@ -577,13 +577,13 @@ try:
                                         u"I need practice"],
                                        u"Select mode of play")
 
-        sock = None
-    
         if play_mode == PRACTICE_MODE:
             print "PRACTICE MODE"
             fight = Fight(play_mode, None)
             fight.play()
         else:
+            sock = None
+            
             if play_mode == CHAMPION_MODE:
                 sock = server_socket()
             elif play_mode == CHALLENGER_MODE:
