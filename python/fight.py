@@ -93,12 +93,11 @@ try:
 
 
             # Initialize some properties
-            self.hit_counter=0
-            self.health=0
-            self.max_health=0
-            self.frame_number=0
-            self.playing=False
-            self.silent=False
+            self.__hit_counter=0
+            self.__health=0
+            self.__max_health=0
+            self.__playing=False
+            self.__silent=False
 
             self.__skin=self.SKINS[0]
             print "--Skin:" + self.__skin["skinName"]
@@ -188,12 +187,12 @@ try:
 
                 try:
                     # Add your health, if we know it yet
-                    if self.max_health>0:
-                        if self.playing:
-                            healthImageNumber=int(math.ceil((float(self.health)/self.max_health) * (len(self.__skin['healthImages'])-1)))
+                    if self.__max_health>0:
+                        if self.__playing:
+                            healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages'])-1)))
                             self.buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
                         else:
-                            if self.won:
+                            if self.__won:
                                 self.buffer.blit(self.__skin['wonImage'], mask=self.__skin['wonImageMask'])
                             else:
                                 self.buffer.blit(self.__skin['deadImage'], mask=self.__skin['deadImageMask'])
@@ -201,11 +200,11 @@ try:
                     pass
 
                 try:
-                    if self.hit_counter>0:
+                    if self.__hit_counter>0:
                         self.buffer.blit(self.__skin['hitImage'], mask=self.__skin['hitImageMask'])
-                        self.hit_counter-=self.FRAME_INTERVAL
+                        self.__hit_counter-=self.FRAME_INTERVAL
                     else:
-                        self.hit_counter=0
+                        self.__hit_counter=0
                 except:
                     pass
 
@@ -214,14 +213,23 @@ try:
 
         def __hum_callback(self, prev_state, current_state, error):
             if prev_state == audio.EPlaying and current_state==audio.EOpen:
-                try:
-                    self.__skin['humSounds'][0].stop()
-                except:
-                    print "no hum sound playing"
+                self.__stop_hum()
+                self.__start_hum()
+                
+        def __stop_hum(self):
+            try:
+                self.__skin['humSounds'][0].stop()
+            except:
+                pass
+    
+        def __start_hum(self):
+            try:
                 self.__skin['humSounds'][0].play(times = 600)
+            except:
+                pass
 
         def __play_sound(self, sound, hum=False):
-            if not self.silent:
+            if not self.__silent:
                 try:
                     sound.stop()
                     if hum:
@@ -230,20 +238,20 @@ try:
                         sound.play(times=1)
                 except:
                     pass
-
+                
         def invalidate_ui(self):
             # Maybe in the future this will set a flag - currently the ui redraws on each frame anyway
             pass
 
         def start_anew(self, max_health):
-            self.max_health=max_health
-            self.health=max_health
-            self.playing=True
+            self.__max_health=max_health
+            self.__health=max_health
+            self.__playing=True
             self.__play_sound(one_of(self.__skin['startSounds']), True)
 
         def trigger_hit(self, new_health):
-            self.hit_counter=2
-            self.health=new_health
+            self.__hit_counter=2
+            self.__health=new_health
             self.__play_sound(one_of(self.__skin['hitSounds']), True)
             
         def trigger_defence(self):
@@ -256,8 +264,8 @@ try:
             self.__play_sound(one_of(self.__skin['deathSounds']), True)
 
         def won_or_dead(self, have_we_won):
-            self.playing=False
-            self.won=have_we_won
+            self.__playing=False
+            self.__won=have_we_won
             
         def set_skin(self, new_skin):
             # TODO: make sure that NONE of the humsounds are playing... currently we assume that there's only one
@@ -265,10 +273,14 @@ try:
             self.__skin['humSounds'][0].stop()
             print " Changing skin: " + new_skin["skinName"] 
             self.__skin=new_skin
-            self.__play_sound(one_of(self.__skin['startSounds']), True)            
-
-
-
+            self.__play_sound(one_of(self.__skin['startSounds']), True)     
+            
+        def setSilent(self, silent):
+            self.__silent=silent
+            if silent:
+                self.__stop_hum()
+            else:
+                self.__start_hum()
 
 
     # this hardcoding is because bt_discover doesn't alway work
@@ -375,10 +387,10 @@ try:
             return lambda: ui.set_skin(skin)
 
         def sound_on(self):
-            ui.silent = False;
+            ui.setSilent(False);
 
         def sound_off(self):
-            ui.silent = True;
+            ui.setSilent(True);
             
         def play(self):
             ui.start_anew(self.health)
