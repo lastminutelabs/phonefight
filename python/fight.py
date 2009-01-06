@@ -480,7 +480,6 @@ try:
 
         def victory(self):
             print "you win!"
-            #self.play_sound(ui.skin['victorySound'])
             self.game_over = True
             self.won = True
 
