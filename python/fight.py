@@ -49,8 +49,8 @@ try:
               return
             else:
               skins_path = self.SKINS_PATH
-              print "checking skins directory for skins..."
               skinsArray = os.listdir(skins_path)
+              print "Found %i skins" % len(skinsArray)
               
               # We need at least one directory in the skins path, so check and proceed if there is one
               
@@ -107,7 +107,7 @@ try:
             self.canvas=None
 
             # uncomment the return to disable the graphical UI
-            return
+            # return
 
             # Create the canvas
             appuifw.app.orientation='portrait'
@@ -305,9 +305,6 @@ try:
 
     # need acceleration magnitude of this much to cause an attack
     ATTACK_THRESHOLD = 100
-
-    # modes of play
-    CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE = 0, 1, 2
 
     # event types
     (INCOMING_HORIZONTAL_ATTACK_EVENT, INCOMING_VERTICAL_ATTACK_EVENT,
@@ -557,15 +554,22 @@ try:
     # Initialize the UI
     play_mode=None
     ui=UI()
+    
+    quit=False
 
     # Start a fight.
-    while 1:
+    while not quit:
+        # Options in the main menu
+        CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE, TIME_TO_QUIT = 0, 1, 2, 3
         play_mode = appuifw.popup_menu([u"I am the champion",
                                         u"I am the challenger",
-                                        u"I need practice"],
+                                        u"I need practice",
+                                        u"Quit"],
                                        u"Select mode of play")
-
-        if play_mode == PRACTICE_MODE:
+        
+        if (play_mode == TIME_TO_QUIT):
+            quit = True
+        elif play_mode == PRACTICE_MODE:
             print "PRACTICE MODE"
             fight = Fight(play_mode, None)
             fight.play()
