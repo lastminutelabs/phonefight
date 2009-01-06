@@ -100,8 +100,8 @@ try:
             self.playing=False
             self.silent=False
 
-            self.skin=self.SKINS[0]
-            print "--Skin:" + self.skin["skinName"]
+            self.__skin=self.SKINS[0]
+            print "--Skin:" + self.__skin["skinName"]
 
             self.buffer=None
             self.canvas=None
@@ -182,7 +182,7 @@ try:
             if self.canvas!=None and self.buffer!=None:
                 try:
                     # Put the background image in place
-                    self.buffer.blit(self.skin['backgroundImage'])
+                    self.buffer.blit(self.__skin['backgroundImage'])
                 except:
                     pass
 
@@ -190,19 +190,19 @@ try:
                     # Add your health, if we know it yet
                     if self.max_health>0:
                         if self.playing:
-                            healthImageNumber=int(math.ceil((float(self.health)/self.max_health) * (len(self.skin['healthImages'])-1)))
-                            self.buffer.blit(self.skin['healthImages'][healthImageNumber], mask=self.skin['healthImageMasks'][healthImageNumber])
+                            healthImageNumber=int(math.ceil((float(self.health)/self.max_health) * (len(self.__skin['healthImages'])-1)))
+                            self.buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
                         else:
                             if self.won:
-                                self.buffer.blit(self.skin['wonImage'], mask=self.skin['wonImageMask'])
+                                self.buffer.blit(self.__skin['wonImage'], mask=self.__skin['wonImageMask'])
                             else:
-                                self.buffer.blit(self.skin['deadImage'], mask=self.skin['deadImageMask'])
+                                self.buffer.blit(self.__skin['deadImage'], mask=self.__skin['deadImageMask'])
                 except:
                     pass
 
                 try:
                     if self.hit_counter>0:
-                        self.buffer.blit(self.skin['hitImage'], mask=self.skin['hitImageMask'])
+                        self.buffer.blit(self.__skin['hitImage'], mask=self.__skin['hitImageMask'])
                         self.hit_counter-=self.FRAME_INTERVAL
                     else:
                         self.hit_counter=0
@@ -215,10 +215,10 @@ try:
         def __hum_callback(self, prev_state, current_state, error):
             if prev_state == audio.EPlaying and current_state==audio.EOpen:
                 try:
-                    self.skin['humSounds'][0].stop()
+                    self.__skin['humSounds'][0].stop()
                 except:
                     print "no hum sound playing"
-                self.skin['humSounds'][0].play(times = 600)
+                self.__skin['humSounds'][0].play(times = 600)
 
         def __play_sound(self, sound, hum=False):
             if not self.silent:
@@ -239,21 +239,21 @@ try:
             self.max_health=max_health
             self.health=max_health
             self.playing=True
-            self.__play_sound(one_of(self.skin['startSounds']), True)
+            self.__play_sound(one_of(self.__skin['startSounds']), True)
 
         def trigger_hit(self, new_health):
             self.hit_counter=2
             self.health=new_health
-            self.__play_sound(one_of(self.skin['hitSounds']), True)
+            self.__play_sound(one_of(self.__skin['hitSounds']), True)
             
         def trigger_defence(self):
-            self.__play_sound(one_of(self.skin['chingSounds']), True)
+            self.__play_sound(one_of(self.__skin['chingSounds']), True)
         
         def trigger_attack_start(self):
-            self.__play_sound(one_of(self.skin['whooshSounds']), True)
+            self.__play_sound(one_of(self.__skin['whooshSounds']), True)
         
         def trigger_dead(self):
-            self.__play_sound(one_of(self.skin['deathSounds']), True)
+            self.__play_sound(one_of(self.__skin['deathSounds']), True)
 
         def won_or_dead(self, have_we_won):
             self.playing=False
@@ -262,10 +262,10 @@ try:
         def set_skin(self, new_skin):
             # TODO: make sure that NONE of the humsounds are playing... currently we assume that there's only one
             # .wav file in the /hum/ directory.
-            self.skin['humSounds'][0].stop()
+            self.__skin['humSounds'][0].stop()
             print " Changing skin: " + new_skin["skinName"] 
-            self.skin=new_skin
-            self.__play_sound(one_of(self.skin['startSounds']), True)            
+            self.__skin=new_skin
+            self.__play_sound(one_of(self.__skin['startSounds']), True)            
 
 
 
