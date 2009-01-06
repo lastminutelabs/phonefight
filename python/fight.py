@@ -52,17 +52,17 @@ try:
             self.__silent=False
             self.__loading_progress=0.0
             self.__progress_per_skin_section=0.0
-            self.buffer=None
-            self.canvas=None
+            self.__buffer=None
+            self.__canvas=None
 
             # Create the canvas
             appuifw.app.orientation='portrait'
             appuifw.app.screen='large'
-            self.canvas=appuifw.Canvas ( redraw_callback=self.__handle_redraw, event_callback=self.__handle_event )
-            appuifw.app.body=self.canvas
+            self.__canvas=appuifw.Canvas ( redraw_callback=self.__handle_redraw, event_callback=self.__handle_event )
+            appuifw.app.body=self.__canvas
 
             # Create an offscreen buffer - draw onto this in the __handle_redraw method and then blit onto the main canvas
-            self.buffer=graphics.Image.new(self.canvas.size)            
+            self.__buffer=graphics.Image.new(self.__canvas.size)            
 
             # Check to see if skins directory exists
             if not os.path.exists(self.SKINS_PATH):
@@ -70,9 +70,9 @@ try:
                 return
             else:
                 # Show the loading image
-                self.__loading_image=self.__load_image(self.DATA_PATH+"loading_image.png")
-                self.buffer.blit(self.__loading_image)
-                self.canvas.blit(self.buffer)
+                self.__loading_image=self.__load_image(self.DATA_PATH+"loading_image.png", False)
+                self.__buffer.blit(self.__loading_image)
+                self.__canvas.blit(self.__buffer)
                 
                 # Check the skins directory and get the subdirs
                 skins_path = self.SKINS_PATH
@@ -138,18 +138,16 @@ try:
             self.timer.cancel()
             
         def __render_progress_bar(self):
-            try:
-                self.__loading_progress+=self.__progress_per_skin_section
-                self.buffer.blit(self.__loading_image)
-                size=self.__loading_progress * 209.0
-                self.buffer.rectangle((16,126, 16+size,141), fill=(255,0,128) )
-                self.canvas.blit(self.buffer)
-            except:
-                pass
+            self.__loading_progress+=self.__progress_per_skin_section
+            self.__buffer.blit(self.__loading_image)
+            size=self.__loading_progress * 209.0
+            self.__buffer.rectangle((16,126, 16+size,141), fill=(255,0,128) )
+            self.__canvas.blit(self.__buffer)
 
         # Loads the specified image or returns a 1x1 blank image in case of an error
-        def __load_image(self, src):
-            self.__render_progress_bar()
+        def __load_image(self, src, show_progress=True):
+            if show_progress:
+                self.__render_progress_bar()
             try:
                 img=graphics.Image.open(src)
                 return img
@@ -158,7 +156,7 @@ try:
                 print("Image "+src+" failed to load")
                 return img
 
-        def __init_sound(self, path):
+        def __init_sound(self, path, show_progress=True):
             try:
                 s = audio.Sound.open(path)
                 s.set_volume(self.DEFAULT_SOUND_VOLUME)
@@ -167,12 +165,12 @@ try:
                 print "Warning - sound sample "+path+" not found"
                 return None
 
-        def __init_sounds(self, path):
-            self.__render_progress_bar()
+        def __init_sounds(self, path, show_progress=True):
+            if show_progress:
+                self.__render_progress_bar()
             sounds = []
             try:
                listing = os.listdir(path)
-               print "  getting listing from "+path+"."
                return map(lambda f: self.__init_sound((path + f)), listing )
             except:
                print "Warning - error loading sounds from "+path
@@ -180,8 +178,9 @@ try:
 
 
         # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it
-        def __load_mask_for(self, mask_src, image):
-            self.__render_progress_bar()
+        def __load_mask_for(self, mask_src, image, show_progress=True):
+            if show_progress:
+                self.__render_progress_bar()
             try:
                 width,height=image.size
                 mask=graphics.Image.new((width,height), '1')
@@ -201,10 +200,10 @@ try:
             pass
 
         def __handle_redraw(self, rect=None):
-            if self.canvas!=None and self.buffer!=None:
+            if self.__canvas!=None and self.__buffer!=None:
                 try:
                     # Put the background image in place
-                    self.buffer.blit(self.__skin['backgroundImage'])
+                    self.__buffer.blit(self.__skin['backgroundImage'])
                 except:
                     pass
 
@@ -213,18 +212,18 @@ try:
                     if self.__max_health>0:
                         if self.__playing:
                             healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages'])-1)))
-                            self.buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
+                            self.__buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
                         else:
                             if self.__won:
-                                self.buffer.blit(self.__skin['wonImage'], mask=self.__skin['wonImageMask'])
+                                self.__buffer.blit(self.__skin['wonImage'], mask=self.__skin['wonImageMask'])
                             else:
-                                self.buffer.blit(self.__skin['deadImage'], mask=self.__skin['deadImageMask'])
+                                self.__buffer.blit(self.__skin['deadImage'], mask=self.__skin['deadImageMask'])
                 except:
                     pass
 
                 try:
                     if self.__hit_counter>0:
-                        self.buffer.blit(self.__skin['hitImage'], mask=self.__skin['hitImageMask'])
+                        self.__buffer.blit(self.__skin['hitImage'], mask=self.__skin['hitImageMask'])
                         self.__hit_counter-=self.FRAME_INTERVAL
                     else:
                         self.__hit_counter=0
@@ -232,7 +231,7 @@ try:
                     pass
 
                 # We always have _something_ to show on the canvas, even if the previous stuff failed at some point
-                self.canvas.blit(self.buffer)
+                self.__canvas.blit(self.__buffer)
 
         def __hum_callback(self, prev_state, current_state, error):
             if prev_state == audio.EPlaying and current_state==audio.EOpen:
