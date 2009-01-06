@@ -284,16 +284,6 @@ try:
                 self.__start_hum()
 
 
-    # this hardcoding is because bt_discover doesn't alway work
-    # edit this if necessary
-    PHONES = [("Athos", "00:18:32:E7:1B:60"),
-              ("Porthos", "00:1E:3A:25:46:8B"),
-              ("Aramis", "00:1F:03:AE:64:0C"),
-              ("Labs", "00:1F:00:AE:54:0C")]
-
-    PHONE_NAMES = [unicode(n) for n, a in PHONES]
-    PHONE_ADDRESSES = [a for n, a in PHONES]
-
     # How to advertise our service
     BT_SERVICE_NAME = u"lastminute.com labs PhoneFight (lightblue BT layer) v0"
     BT_CHANNEL=5
