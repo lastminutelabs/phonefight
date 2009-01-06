@@ -542,16 +542,21 @@ try:
             return None
     
     def client_socket():
+        # Get the device from a menu
         device=lightblue.selectdevice()
         
-        # Connect to the channel
-        try:
-            conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
-            conn.connect((device[0], BT_CHANNEL))
-            return conn
-        except:
-            print "Failed to connect to %s"%device[1]
-            return None
+        # Was a device chosen
+        if device:
+            try:
+                # Connect to the device
+                conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
+                conn.connect((device[0], BT_CHANNEL))
+                return conn
+            except:
+                print "Failed to connect to %s"%device[1]
+        
+        # We get here, we didn't connect
+        return None
         
     # Initialize the UI
     play_mode=None
