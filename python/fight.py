@@ -529,13 +529,17 @@ try:
                     pass
 
     def server_socket():
-        server = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
-        server.bind(("", BT_CHANNEL))
-        server.listen(1)
-        socket.set_security(server, socket.AUTH | socket.AUTHOR)
-        socket.bt_advertise_service(BT_SERVICE_NAME, server, True, socket.RFCOMM)
-        conn, client_addr = server.accept()
-        return conn
+        try:
+            server = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
+            server.bind(("", BT_CHANNEL))
+            server.listen(1)
+            socket.set_security(server, socket.AUTH | socket.AUTHOR)
+            socket.bt_advertise_service(BT_SERVICE_NAME, server, True, socket.RFCOMM)
+            conn, client_addr = server.accept()
+            return conn
+        except:
+            print "Failed to create connection"
+            return None
     
     def client_socket():
         device=lightblue.selectdevice()
@@ -544,11 +548,10 @@ try:
         try:
             conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
             conn.connect((device[0], BT_CHANNEL))
+            return conn
         except:
             menu_message(u"Failed to connect to %s"%device[1])
             return None
-        
-        return conn
         
     # Initialize the UI
     play_mode=None
