@@ -78,7 +78,6 @@ try:
                 skins_path = self.SKINS_PATH
                 skinsArray = os.listdir(skins_path)
                 numSkins=len(skinsArray)
-                print "Found %i skins" % numSkins
                 
                 # We need at least one directory in the skins path, so check and proceed if there is one
                 if numSkins > 0:
