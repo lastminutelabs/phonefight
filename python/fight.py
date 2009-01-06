@@ -93,31 +93,31 @@ try:
                     for skin in skinsArray:
                         print " Found skin: " + skin
                         self.SKINS.append( {
-                                            'skinName'   : skin,
-                                            'startSounds': self.__init_sounds(skins_path + skin + "\\sounds\\start\\"),
-                                            'chingSounds': self.__init_sounds(skins_path + skin + "\\sounds\\defense\\"),
-                                            'hitSounds':   self.__init_sounds(skins_path + skin + "\\sounds\\hit\\"),
-                                            'whooshSounds':self.__init_sounds(skins_path + skin + "\\sounds\\attack\\"),
-                                            'deathSounds': self.__init_sounds(skins_path + skin + "\\sounds\\death\\"),
-                                            'humSounds':   self.__init_sounds(skins_path + skin + "\\sounds\\hum\\"),
+                                            'skinName'   :      skin,
+                                            'startSounds':      self.__init_sounds(skins_path + skin + "\\sounds\\start\\"),
+                                            'chingSounds':      self.__init_sounds(skins_path + skin + "\\sounds\\defense\\"),
+                                            'hitSounds':        self.__init_sounds(skins_path + skin + "\\sounds\\hit\\"),
+                                            'whooshSounds':     self.__init_sounds(skins_path + skin + "\\sounds\\attack\\"),
+                                            'deathSounds':      self.__init_sounds(skins_path + skin + "\\sounds\\death\\"),
+                                            'humSounds':        self.__init_sounds(skins_path + skin + "\\sounds\\hum\\"),
   
   
-                                            'backgroundImage':self.__load_image(skins_path + skin + '\\images\\fight_bg.png'),
-                                            'hitImage':       self.__load_image(skins_path + skin + '\\images\\hit_1.png'),
-                                            'healthImages':   [self.__load_image(skins_path + skin + '\\images\\health_1.png'),
-                                                               self.__load_image(skins_path  + skin + '\\images\\health_2.png'),
-                                                               self.__load_image(skins_path  + skin + '\\images\\health_3.png')],
-                                            'deadImage':      self.__load_image(skins_path + skin + '\\images\\dead.png'),
-                                            'wonImage':       self.__load_image(skins_path  + skin + '\\images\\won.png')
+                                            'backgroundImage':  self.__load_image(skins_path + skin + '\\images\\fight_bg.png'),
+                                            'hitImage':         self.__load_image(skins_path + skin + '\\images\\hit_1.png'),
+                                            'healthImages':   [ self.__load_image(skins_path + skin + '\\images\\health_1.png'),
+                                                                self.__load_image(skins_path  + skin + '\\images\\health_2.png'),
+                                                                self.__load_image(skins_path  + skin + '\\images\\health_3.png')],
+                                            'deadImage':        self.__load_image(skins_path + skin + '\\images\\dead.png'),
+                                            'wonImage':         self.__load_image(skins_path  + skin + '\\images\\won.png')
                                             } )
   
                         # Add masks seperately once we have loaded the images they are required for
-                        self.SKINS[ndx]['hitImageMask']=         self.__load_mask_for(skins_path  + skin + '\\images\\hit_1_mask.png', self.SKINS[ndx]['hitImage'])
-                        self.SKINS[ndx]['healthImageMasks']=    [self.__load_mask_for(skins_path  + skin + '\\images\\health_1_mask.png',self.SKINS[ndx]['healthImages'][0]),
-                                                          self.__load_mask_for(skins_path  + skin + '\\images\\health_2_mask.png',self.SKINS[ndx]['healthImages'][1]),
-                                                          self.__load_mask_for(skins_path  + skin + '\\images\\health_3_mask.png',self.SKINS[ndx]['healthImages'][2])]
-                        self.SKINS[ndx]['deadImageMask']=        self.__load_mask_for(skins_path  + skin + '\\images\\dead_mask.png', self.SKINS[ndx]['deadImage'])
-                        self.SKINS[ndx]['wonImageMask']=         self.__load_mask_for(skins_path  + skin + '\\images\\won_mask.png', self.SKINS[ndx]['wonImage'])
+                        self.SKINS[ndx]['hitImageMask']=        self.__load_mask_for(skins_path  + skin + '\\images\\hit_1_mask.png', self.SKINS[ndx]['hitImage'])
+                        self.SKINS[ndx]['healthImageMasks']=  [ self.__load_mask_for(skins_path  + skin + '\\images\\health_1_mask.png',self.SKINS[ndx]['healthImages'][0]),
+                                                                self.__load_mask_for(skins_path  + skin + '\\images\\health_2_mask.png',self.SKINS[ndx]['healthImages'][1]),
+                                                                self.__load_mask_for(skins_path  + skin + '\\images\\health_3_mask.png',self.SKINS[ndx]['healthImages'][2])]
+                        self.SKINS[ndx]['deadImageMask']=       self.__load_mask_for(skins_path  + skin + '\\images\\dead_mask.png', self.SKINS[ndx]['deadImage'])
+                        self.SKINS[ndx]['wonImageMask']=        self.__load_mask_for(skins_path  + skin + '\\images\\won_mask.png', self.SKINS[ndx]['wonImage'])
   
                         ndx = ndx + 1
                 else:
