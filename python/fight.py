@@ -38,76 +38,22 @@ try:
         FRAME_INTERVAL=0.1
 
         DEFAULT_SOUND_VOLUME=3
-        SKINS_PATH="e:\\data\\phonefight\\skins\\"
+        DATA_PATH="e:\\data\\phonefight\\"
+        SKINS_PATH=DATA_PATH+"skins\\"
 
 
         def __init__(self):
-
-            # Check to see if skins directory exists
-            if not os.path.exists(self.SKINS_PATH):
-              print "No skin directory found\n\nYou must download at least one skin to this phone"
-              return
-            else:
-              skins_path = self.SKINS_PATH
-              skinsArray = os.listdir(skins_path)
-              print "Found %i skins" % len(skinsArray)
-              
-              # We need at least one directory in the skins path, so check and proceed if there is one
-              
-              if len(skinsArray) > 0:
-                self.SKINS=[]
-                ndx = 0
-                
-                for skin in skinsArray:
-                  print " Found skin: " + skin
-                  self.SKINS.append( {
-                    'skinName'   : skin,
-                    'startSounds': self.__init_sounds(skins_path + skin + "\\sounds\\start\\"),
-                    'chingSounds': self.__init_sounds(skins_path + skin + "\\sounds\\defense\\"),
-                    'hitSounds':   self.__init_sounds(skins_path + skin + "\\sounds\\hit\\"),
-                    'whooshSounds':self.__init_sounds(skins_path + skin + "\\sounds\\attack\\"),
-                    'deathSounds': self.__init_sounds(skins_path + skin + "\\sounds\\death\\"),
-                    'humSounds':   self.__init_sounds(skins_path + skin + "\\sounds\\hum\\"),
-  
-  
-                    'backgroundImage':self.__load_image(skins_path + skin + '\\images\\fight_bg.png'),
-                    'hitImage':       self.__load_image(skins_path + skin + '\\images\\hit_1.png'),
-                    'healthImages':   [self.__load_image(skins_path + skin + '\\images\\health_1.png'),
-                                    self.__load_image(skins_path  + skin + '\\images\\health_2.png'),
-                                    self.__load_image(skins_path  + skin + '\\images\\health_3.png')],
-                    'deadImage':      self.__load_image(skins_path + skin + '\\images\\dead.png'),
-                    'wonImage':       self.__load_image(skins_path  + skin + '\\images\\won.png')
-                                }
-                  )
-  
-                  # Add masks seperately ( is this necessary? )
-                  self.SKINS[ndx]['hitImageMask']=         self.__load_mask_for(skins_path  + skin + '\\images\\hit_1_mask.png', self.SKINS[ndx]['hitImage'])
-                  self.SKINS[ndx]['healthImageMasks']=    [self.__load_mask_for(skins_path  + skin + '\\images\\health_1_mask.png',self.SKINS[ndx]['healthImages'][0]),
-                                                          self.__load_mask_for(skins_path  + skin + '\\images\\health_2_mask.png',self.SKINS[ndx]['healthImages'][1]),
-                                                          self.__load_mask_for(skins_path  + skin + '\\images\\health_3_mask.png',self.SKINS[ndx]['healthImages'][2])]
-                  self.SKINS[ndx]['deadImageMask']=        self.__load_mask_for(skins_path  + skin + '\\images\\dead_mask.png', self.SKINS[ndx]['deadImage'])
-                  self.SKINS[ndx]['wonImageMask']=         self.__load_mask_for(skins_path  + skin + '\\images\\won_mask.png', self.SKINS[ndx]['wonImage'])
-  
-                  ndx = ndx + 1
-              else:
-                print "No skins found.  You might need to reinstall, or alternatively put some skins in the e:\data\phonefight\skins directory"
-
-
+            
             # Initialize some properties
             self.__hit_counter=0
             self.__health=0
             self.__max_health=0
             self.__playing=False
             self.__silent=False
-
-            self.__skin=self.SKINS[0]
-            print "--Skin:" + self.__skin["skinName"]
-
+            self.__loading_progress=0.0
+            self.__progress_per_skin_section=0.0
             self.buffer=None
             self.canvas=None
-
-            # uncomment the return to disable the graphical UI
-            # return
 
             # Create the canvas
             appuifw.app.orientation='portrait'
@@ -116,20 +62,94 @@ try:
             appuifw.app.body=self.canvas
 
             # Create an offscreen buffer - draw onto this in the __handle_redraw method and then blit onto the main canvas
-            self.buffer=graphics.Image.new(self.canvas.size)
+            self.buffer=graphics.Image.new(self.canvas.size)            
 
-            # Make sure that the background gets draw immediately
+            # Check to see if skins directory exists
+            if not os.path.exists(self.SKINS_PATH):
+                print "No skin directory found\n\nYou must download at least one skin to this phone"
+                return
+            else:
+                # Show the loading image
+                self.__loading_image=self.__load_image(self.DATA_PATH+"loading_image.png")
+                self.buffer.blit(self.__loading_image)
+                self.canvas.blit(self.buffer)
+                
+                # Check the skins directory and get the subdirs
+                skins_path = self.SKINS_PATH
+                skinsArray = os.listdir(skins_path)
+                numSkins=len(skinsArray)
+                print "Found %i skins" % numSkins
+                
+                # We need at least one directory in the skins path, so check and proceed if there is one
+                if numSkins > 0:
+                    # Initialize some vars for the loading bar
+                    self.__progress_per_skin_section=1.0/(19 * numSkins) # There are 16 different sections for skins
+
+                    # Initialize some vars to start loading the skins
+                    self.SKINS=[]
+                    ndx = 0
+                    
+                    # Load each skin
+                    for skin in skinsArray:
+                        print " Found skin: " + skin
+                        self.SKINS.append( {
+                                            'skinName'   : skin,
+                                            'startSounds': self.__init_sounds(skins_path + skin + "\\sounds\\start\\"),
+                                            'chingSounds': self.__init_sounds(skins_path + skin + "\\sounds\\defense\\"),
+                                            'hitSounds':   self.__init_sounds(skins_path + skin + "\\sounds\\hit\\"),
+                                            'whooshSounds':self.__init_sounds(skins_path + skin + "\\sounds\\attack\\"),
+                                            'deathSounds': self.__init_sounds(skins_path + skin + "\\sounds\\death\\"),
+                                            'humSounds':   self.__init_sounds(skins_path + skin + "\\sounds\\hum\\"),
+  
+  
+                                            'backgroundImage':self.__load_image(skins_path + skin + '\\images\\fight_bg.png'),
+                                            'hitImage':       self.__load_image(skins_path + skin + '\\images\\hit_1.png'),
+                                            'healthImages':   [self.__load_image(skins_path + skin + '\\images\\health_1.png'),
+                                                               self.__load_image(skins_path  + skin + '\\images\\health_2.png'),
+                                                               self.__load_image(skins_path  + skin + '\\images\\health_3.png')],
+                                            'deadImage':      self.__load_image(skins_path + skin + '\\images\\dead.png'),
+                                            'wonImage':       self.__load_image(skins_path  + skin + '\\images\\won.png')
+                                            } )
+  
+                        # Add masks seperately once we have loaded the images they are required for
+                        self.SKINS[ndx]['hitImageMask']=         self.__load_mask_for(skins_path  + skin + '\\images\\hit_1_mask.png', self.SKINS[ndx]['hitImage'])
+                        self.SKINS[ndx]['healthImageMasks']=    [self.__load_mask_for(skins_path  + skin + '\\images\\health_1_mask.png',self.SKINS[ndx]['healthImages'][0]),
+                                                          self.__load_mask_for(skins_path  + skin + '\\images\\health_2_mask.png',self.SKINS[ndx]['healthImages'][1]),
+                                                          self.__load_mask_for(skins_path  + skin + '\\images\\health_3_mask.png',self.SKINS[ndx]['healthImages'][2])]
+                        self.SKINS[ndx]['deadImageMask']=        self.__load_mask_for(skins_path  + skin + '\\images\\dead_mask.png', self.SKINS[ndx]['deadImage'])
+                        self.SKINS[ndx]['wonImageMask']=         self.__load_mask_for(skins_path  + skin + '\\images\\won_mask.png', self.SKINS[ndx]['wonImage'])
+  
+                        ndx = ndx + 1
+                else:
+                    print "No skins found.  You might need to reinstall, or alternatively put some skins in the e:\data\phonefight\skins directory"
+
+            # Initialize the ui to be the first skin in the SKINS array
+            self.__skin=self.SKINS[0]
+            print "Initial skin set to : " + self.__skin["skinName"]
+
+            # Make sure that the background gets drawn immediately
             self.__handle_redraw(None)
 
-            # Start a refresh timer
+            # Start the refresh timer
             self.timer=e32.Ao_timer()
             self.timer.after(UI.FRAME_INTERVAL, self.__update_ui)
 
         def __del__(self):
             self.timer.cancel()
+            
+        def __render_progress_bar(self):
+            try:
+                self.__loading_progress+=self.__progress_per_skin_section
+                self.buffer.blit(self.__loading_image)
+                size=self.__loading_progress * 209.0
+                self.buffer.rectangle((16,126, 16+size,141), fill=(255,0,128) )
+                self.canvas.blit(self.buffer)
+            except:
+                pass
 
         # Loads the specified image or returns a 1x1 blank image in case of an error
         def __load_image(self, src):
+            self.__render_progress_bar()
             try:
                 img=graphics.Image.open(src)
                 return img
@@ -148,6 +168,7 @@ try:
                 return None
 
         def __init_sounds(self, path):
+            self.__render_progress_bar()
             sounds = []
             try:
                listing = os.listdir(path)
@@ -160,6 +181,7 @@ try:
 
         # Using the already loaded image as a guide, it loads a mask from the specifed src and returnes it
         def __load_mask_for(self, mask_src, image):
+            self.__render_progress_bar()
             try:
                 width,height=image.size
                 mask=graphics.Image.new((width,height), '1')
