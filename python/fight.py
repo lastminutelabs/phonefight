@@ -248,15 +248,12 @@ try:
             
         def trigger_defence(self):
             self.__play_sound(one_of(self.skin['chingSounds']), True)
-            pass
         
         def trigger_attack_start(self):
             self.__play_sound(one_of(self.skin['whooshSounds']), True)
-            pass
         
         def trigger_dead(self):
             self.__play_sound(one_of(self.skin['deathSounds']), True)
-            pass
 
         def won_or_dead(self, have_we_won):
             self.playing=False
