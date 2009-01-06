@@ -557,48 +557,57 @@ try:
         
         # We get here, we didn't connect
         return None
-        
+
+
+
+
+
+
+
+
+
     # Initialize the UI
     play_mode=None
     ui=UI()
 
     # Start a fight.
-    play_mode = appuifw.popup_menu([u"I am the champion",
-                                    u"I am the challenger",
-                                    u"I need practice"],
-                                   u"Select mode of play")
+    while 1:
+        play_mode = appuifw.popup_menu([u"I am the champion",
+                                        u"I am the challenger",
+                                        u"I need practice"],
+                                       u"Select mode of play")
 
-    sock = None
-
-    if play_mode == PRACTICE_MODE:
-        print "PRACTICE MODE"
-        fight = Fight(play_mode, None)
-        fight.play()
-    else:
-        if play_mode == CHAMPION_MODE:
-            sock = server_socket()
-        elif play_mode == CHALLENGER_MODE:
-            sock = client_socket()
-
-        if sock:
-            sock.setblocking(0)
-            playing = True
-
-            while playing:
-                print "FIGHT!"
-                fight = Fight(play_mode, sock)
-                (won, quitting) = fight.play()
-
-                if quitting:
-                    playing = False
-                else:
-                    if won:
-                        result = "won"
+        sock = None
+    
+        if play_mode == PRACTICE_MODE:
+            print "PRACTICE MODE"
+            fight = Fight(play_mode, None)
+            fight.play()
+        else:
+            if play_mode == CHAMPION_MODE:
+                sock = server_socket()
+            elif play_mode == CHALLENGER_MODE:
+                sock = client_socket()
+    
+            if sock:
+                sock.setblocking(0)
+                playing = True
+    
+                while playing:
+                    print "FIGHT!"
+                    fight = Fight(play_mode, sock)
+                    (won, quitting) = fight.play()
+    
+                    if quitting:
+                        playing = False
                     else:
-                        result = "lost"
-                    playing = not appuifw.popup_menu([u"Yes", u"No"],
-                                                     u"You %s! Play again?" % result)
-            sock.close()
+                        if won:
+                            result = "won"
+                        else:
+                            result = "lost"
+                        playing = not appuifw.popup_menu([u"Yes", u"No"],
+                                                         u"You %s! Play again?" % result)
+                sock.close()
 
     appuifw.app.set_exit()
 
