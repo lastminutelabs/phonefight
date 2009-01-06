@@ -528,20 +528,6 @@ try:
                 except:
                     pass
 
-
-    #def server_socket():
-    #    server = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
-    #    channel = socket.bt_rfcomm_get_available_server_channel(server)
-    #    server.bind(("", channel))
-    #    server.listen(1)
-    #    socket.bt_advertise_service(BT_SERVICE_NAME, server, True,
-    #                                socket.RFCOMM)
-    #    socket.set_security(server, socket.AUTH | socket.AUTHOR)
-    #    print "waiting for client on channel %d ..." % channel
-    #    conn, client_addr = server.accept()
-    #    print "client connected!"
-    #    return conn
-    
     def server_socket():
         server = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
         server.bind(("", BT_CHANNEL))
@@ -564,47 +550,6 @@ try:
         
         return conn
         
-    #def client_socket():
-    #    conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
-    #    print "discovering..."
-    #    try:
-    #        address, services = socket.bt_discover() # CRASHES!?
-    #    except:
-    #        print "\n".join(traceback.format_exception(*sys.exc_info()))
-    #        appuifw.note(u"Cannot connect. Sorry.", "error")
-    #        return None
-    #
-    #    print "found services..."
-    #    if BT_SERVICE_NAME in services:
-    #        print "service available..."
-    #        channel = services[BT_SERVICE_NAME]
-    #        print "got channel..."
-    #        conn.connect((address, channel))
-    #        print "connected to server!"
-    #        return conn
-    #    else:
-    #        print "\n".join(services)
-    #        appuifw.note(u"Target is not running a Phone Fight server" % BT_SERVICE_NAME,
-    #                     "error")
-    #        return None
-
-    def client_socket_hack():
-        conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
-        phone = appuifw.popup_menu(PHONE_NAMES, u"Phone:")
-        channel = 5 #probably
-        try:
-            conn.connect((PHONE_ADDRESSES[phone], channel))
-            return conn
-        except:
-            channel = appuifw.query(u"Channel number:", "number")
-
-        try:
-            conn.connect((PHONE_ADDRESSES[phone], channel))
-            return conn
-        except:
-            appuifw.note(u"Cannot connect. Sorry.", "error")
-            return None
-
     # Initialize the UI
     play_mode=None
     ui=UI()
@@ -625,12 +570,7 @@ try:
         if play_mode == CHAMPION_MODE:
             sock = server_socket()
         elif play_mode == CHALLENGER_MODE:
-            #discover = not appuifw.popup_menu([u"Yes", u"No"],
-            #                                  u"Discover automatically?")
-            #if discover:
             sock = client_socket()
-            #else:
-            #    sock = client_socket_hack()
 
         if sock:
             sock.setblocking(0)
