@@ -23,6 +23,7 @@ import sys
 import traceback
 import graphics
 import os
+import lightblue
 
 # Misty lets us remove the screensave but we're OK without it
 try:
@@ -106,7 +107,7 @@ try:
             self.canvas=None
 
             # uncomment the return to disable the graphical UI
-            # return
+            return
 
             # Create the canvas
             appuifw.app.orientation='portrait'
@@ -293,8 +294,9 @@ try:
     PHONE_NAMES = [unicode(n) for n, a in PHONES]
     PHONE_ADDRESSES = [a for n, a in PHONES]
 
-    # how to advertise our service
-    BT_SERVICE_NAME = u"lastminute.com labs PhoneFight v0"
+    # How to advertise our service
+    BT_SERVICE_NAME = u"lastminute.com labs PhoneFight (lightblue BT layer) v0"
+    BT_CHANNEL=5
 
     # that bluetooth phonefight protocol in full
     HORIZONTAL_ATTACK_MESSAGE, VERTICAL_ATTACK_MESSAGE, VICTORY_MESSAGE = 'H', 'V', 'W'
@@ -527,42 +529,64 @@ try:
                     pass
 
 
+    #def server_socket():
+    #    server = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
+    #    channel = socket.bt_rfcomm_get_available_server_channel(server)
+    #    server.bind(("", channel))
+    #    server.listen(1)
+    #    socket.bt_advertise_service(BT_SERVICE_NAME, server, True,
+    #                                socket.RFCOMM)
+    #    socket.set_security(server, socket.AUTH | socket.AUTHOR)
+    #    print "waiting for client on channel %d ..." % channel
+    #    conn, client_addr = server.accept()
+    #    print "client connected!"
+    #    return conn
+    
     def server_socket():
         server = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
-        channel = socket.bt_rfcomm_get_available_server_channel(server)
-        server.bind(("", channel))
+        server.bind(("", BT_CHANNEL))
         server.listen(1)
-        socket.bt_advertise_service(BT_SERVICE_NAME, server, True,
-                                    socket.RFCOMM)
         socket.set_security(server, socket.AUTH | socket.AUTHOR)
-        print "waiting for client on channel %d ..." % channel
+        socket.bt_advertise_service(BT_SERVICE_NAME, server, True, socket.RFCOMM)
         conn, client_addr = server.accept()
-        print "client connected!"
         return conn
-
+    
     def client_socket():
-        conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
-        print "discovering..."
+        device=lightblue.selectdevice()
+        
+        # Connect to the channel
         try:
-            address, services = socket.bt_discover() # CRASHES!?
+            conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
+            conn.connect((device[0], BT_CHANNEL))
         except:
-            print "\n".join(traceback.format_exception(*sys.exc_info()))
-            appuifw.note(u"Cannot connect. Sorry.", "error")
+            menu_message(u"Failed to connect to %s"%device[1])
             return None
-
-        print "found services..."
-        if BT_SERVICE_NAME in services:
-            print "service available..."
-            channel = services[BT_SERVICE_NAME]
-            print "got channel..."
-            conn.connect((address, channel))
-            print "connected to server!"
-            return conn
-        else:
-            print "\n".join(services)
-            appuifw.note(u"Target is not running a Phone Fight server" % BT_SERVICE_NAME,
-                         "error")
-            return None
+        
+        return conn
+        
+    #def client_socket():
+    #    conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
+    #    print "discovering..."
+    #    try:
+    #        address, services = socket.bt_discover() # CRASHES!?
+    #    except:
+    #        print "\n".join(traceback.format_exception(*sys.exc_info()))
+    #        appuifw.note(u"Cannot connect. Sorry.", "error")
+    #        return None
+    #
+    #    print "found services..."
+    #    if BT_SERVICE_NAME in services:
+    #        print "service available..."
+    #        channel = services[BT_SERVICE_NAME]
+    #        print "got channel..."
+    #        conn.connect((address, channel))
+    #        print "connected to server!"
+    #        return conn
+    #    else:
+    #        print "\n".join(services)
+    #        appuifw.note(u"Target is not running a Phone Fight server" % BT_SERVICE_NAME,
+    #                     "error")
+    #        return None
 
     def client_socket_hack():
         conn = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
@@ -601,12 +625,12 @@ try:
         if play_mode == CHAMPION_MODE:
             sock = server_socket()
         elif play_mode == CHALLENGER_MODE:
-            discover = not appuifw.popup_menu([u"Yes", u"No"],
-                                              u"Discover automatically?")
-            if discover:
-                sock = client_socket()
-            else:
-                sock = client_socket_hack()
+            #discover = not appuifw.popup_menu([u"Yes", u"No"],
+            #                                  u"Discover automatically?")
+            #if discover:
+            sock = client_socket()
+            #else:
+            #    sock = client_socket_hack()
 
         if sock:
             sock.setblocking(0)
