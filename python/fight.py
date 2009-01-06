@@ -550,7 +550,7 @@ try:
             conn.connect((device[0], BT_CHANNEL))
             return conn
         except:
-            menu_message(u"Failed to connect to %s"%device[1])
+            print "Failed to connect to %s"%device[1]
             return None
         
     # Initialize the UI
