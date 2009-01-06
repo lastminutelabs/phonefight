@@ -54,6 +54,18 @@ try:
             self.__progress_per_skin_section=0.0
             self.__buffer=None
             self.__canvas=None
+            self.__timer=None
+            
+        def __del__(self):
+            if self.__timer:
+                self.__timer.cancel()
+            
+        def initialize(self):
+            
+            # Check to see if skins directory exists
+            if not os.path.exists(self.SKINS_PATH):
+                print "No skin directory found\n\nYou must download at least one skin to this phone"
+                return False
 
             # Create the canvas
             appuifw.app.orientation='portrait'
@@ -64,84 +76,80 @@ try:
             # Create an offscreen buffer - draw onto this in the __handle_redraw method and then blit onto the main canvas
             self.__buffer=graphics.Image.new(self.__canvas.size)            
 
-            # Check to see if skins directory exists
-            if not os.path.exists(self.SKINS_PATH):
-                print "No skin directory found\n\nYou must download at least one skin to this phone"
-                return
-            else:
-                # Show the loading image
-                self.__loading_image=self.__load_image(self.DATA_PATH+"loading_image.png")
-                self.__buffer.blit(self.__loading_image)
-                self.__canvas.blit(self.__buffer)
+            # Show the loading image
+            self.__loading_image=self.__load_image(self.DATA_PATH+"loading_image.png")
+            self.__buffer.blit(self.__loading_image)
+            self.__canvas.blit(self.__buffer)
+            
+            # Check the skins directory and get the subdirs
+            skins_path = self.SKINS_PATH
+            skinsArray = os.listdir(skins_path)
+            numSkins=len(skinsArray)
+            
+            # We need at least one directory in the skins path, so check and proceed if there is one
+            if 0==numSkins:
+                print "No skins found.  You might need to reinstall, or alternatively put some skins in the e:\data\phonefight\skins directory"
+                return False
                 
-                # Check the skins directory and get the subdirs
-                skins_path = self.SKINS_PATH
-                skinsArray = os.listdir(skins_path)
-                numSkins=len(skinsArray)
+            # Initialize some vars for the loading bar
+            self.__progress_per_skin_section=1.0/(15 * numSkins) # There are 16 different sections for skins
+
+            # Initialize the empty skins array
+            self.SKINS=[]
+            
+            # Load each skin
+            for skin_name in skinsArray:
+                skin={ 'skinName': skin_name }
+                skin['startSounds']=        self.__init_sounds(skins_path + skin_name + "\\sounds\\start\\")
+                self.__update_progress_bar()
+                skin['chingSounds']=        self.__init_sounds(skins_path + skin_name + "\\sounds\\defense\\")
+                self.__update_progress_bar()
+                skin['hitSounds']=          self.__init_sounds(skins_path + skin_name + "\\sounds\\hit\\")
+                self.__update_progress_bar()
+                skin['whooshSounds']=       self.__init_sounds(skins_path + skin_name + "\\sounds\\attack\\")
+                self.__update_progress_bar()
+                skin['deathSounds']=        self.__init_sounds(skins_path + skin_name + "\\sounds\\death\\")
+                self.__update_progress_bar()
+                skin['humSounds']=          self.__init_sounds(skins_path + skin_name + "\\sounds\\hum\\")
+                self.__update_progress_bar()
+                skin['backgroundImage']=    self.__load_image(skins_path + skin_name + '\\images\\fight_bg.png')
+                self.__update_progress_bar()
+                skin['hitImage']=           self.__load_image(skins_path + skin_name + '\\images\\hit_1.png')
+                self.__update_progress_bar()
+                skin['healthImages']=[      self.__load_image(skins_path + skin_name + '\\images\\health_1.png'),
+                                            self.__load_image(skins_path + skin_name + '\\images\\health_2.png'),
+                                            self.__load_image(skins_path + skin_name + '\\images\\health_3.png')]
+                self.__update_progress_bar()
+                skin['deadImage']=          self.__load_image(skins_path + skin_name + '\\images\\dead.png')
+                self.__update_progress_bar()
+                skin['wonImage']=           self.__load_image(skins_path + skin_name + '\\images\\won.png')
+                self.__update_progress_bar()
+                skin['hitImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\hit_1_mask.png', skin['hitImage'])
+                self.__update_progress_bar()
+                skin['healthImageMasks']=  [self.__load_mask_for(skins_path + skin_name + '\\images\\health_1_mask.png', skin['healthImages'][0]),
+                                            self.__load_mask_for(skins_path + skin_name + '\\images\\health_2_mask.png', skin['healthImages'][1]),
+                                            self.__load_mask_for(skins_path + skin_name + '\\images\\health_3_mask.png', skin['healthImages'][2])]
+                self.__update_progress_bar()
+                skin['deadImageMask']=      self.__load_mask_for(skins_path + skin_name + '\\images\\dead_mask.png', skin['deadImage'])
+                self.__update_progress_bar()
+                skin['wonImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\won_mask.png', skin['wonImage'])
+                self.__update_progress_bar()
+
+                self.SKINS.append(skin)
                 
-                # We need at least one directory in the skins path, so check and proceed if there is one
-                if numSkins > 0:
-                    # Initialize some vars for the loading bar
-                    self.__progress_per_skin_section=1.0/(15 * numSkins) # There are 16 different sections for skins
-
-                    # Initialize the empty skins array
-                    self.SKINS=[]
-                    
-                    # Load each skin
-                    for skin_name in skinsArray:
-                        skin={ 'skinName': skin_name }
-                        skin['startSounds']=        self.__init_sounds(skins_path + skin_name + "\\sounds\\start\\")
-                        self.__update_progress_bar()
-                        skin['chingSounds']=        self.__init_sounds(skins_path + skin_name + "\\sounds\\defense\\")
-                        self.__update_progress_bar()
-                        skin['hitSounds']=          self.__init_sounds(skins_path + skin_name + "\\sounds\\hit\\")
-                        self.__update_progress_bar()
-                        skin['whooshSounds']=       self.__init_sounds(skins_path + skin_name + "\\sounds\\attack\\")
-                        self.__update_progress_bar()
-                        skin['deathSounds']=        self.__init_sounds(skins_path + skin_name + "\\sounds\\death\\")
-                        self.__update_progress_bar()
-                        skin['humSounds']=          self.__init_sounds(skins_path + skin_name + "\\sounds\\hum\\")
-                        self.__update_progress_bar()
-                        skin['backgroundImage']=    self.__load_image(skins_path + skin_name + '\\images\\fight_bg.png')
-                        self.__update_progress_bar()
-                        skin['hitImage']=           self.__load_image(skins_path + skin_name + '\\images\\hit_1.png')
-                        self.__update_progress_bar()
-                        skin['healthImages']=[      self.__load_image(skins_path + skin_name + '\\images\\health_1.png'),
-                                                    self.__load_image(skins_path + skin_name + '\\images\\health_2.png'),
-                                                    self.__load_image(skins_path + skin_name + '\\images\\health_3.png')]
-                        self.__update_progress_bar()
-                        skin['deadImage']=          self.__load_image(skins_path + skin_name + '\\images\\dead.png')
-                        self.__update_progress_bar()
-                        skin['wonImage']=           self.__load_image(skins_path + skin_name + '\\images\\won.png')
-                        self.__update_progress_bar()
-                        skin['hitImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\hit_1_mask.png', skin['hitImage'])
-                        self.__update_progress_bar()
-                        skin['healthImageMasks']=  [self.__load_mask_for(skins_path + skin_name + '\\images\\health_1_mask.png', skin['healthImages'][0]),
-                                                    self.__load_mask_for(skins_path + skin_name + '\\images\\health_2_mask.png', skin['healthImages'][1]),
-                                                    self.__load_mask_for(skins_path + skin_name + '\\images\\health_3_mask.png', skin['healthImages'][2])]
-                        self.__update_progress_bar()
-                        skin['deadImageMask']=      self.__load_mask_for(skins_path + skin_name + '\\images\\dead_mask.png', skin['deadImage'])
-                        self.__update_progress_bar()
-                        skin['wonImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\won_mask.png', skin['wonImage'])
-                        self.__update_progress_bar()
-
-                        self.SKINS.append(skin)
-                else:
-                    print "No skins found.  You might need to reinstall, or alternatively put some skins in the e:\data\phonefight\skins directory"
-
             # Initialize the ui to be the first skin in the SKINS array
             self.__skin=self.SKINS[0]
             print "Initial skin set to : " + self.__skin["skinName"]
-
+            
             # Make sure that the background gets drawn immediately
             self.__handle_redraw(None)
 
             # Start the refresh timer
-            self.timer=e32.Ao_timer()
-            self.timer.after(UI.FRAME_INTERVAL, self.__update_ui)
-
-        def __del__(self):
-            self.timer.cancel()
+            self.__timer=e32.Ao_timer()
+            self.__timer.after(UI.FRAME_INTERVAL, self.__update_ui)
+            
+            # If we get here, we have initialized properly
+            return True
             
         def __update_progress_bar(self):
             self.__loading_progress+=self.__progress_per_skin_section
@@ -193,7 +201,7 @@ try:
 
         def __update_ui(self):
             self.__handle_redraw(None)
-            self.timer.after(UI.FRAME_INTERVAL, self.__update_ui)
+            self.__timer.after(UI.FRAME_INTERVAL, self.__update_ui)
 
         def __handle_event(self, event):
             #self.__handle_redraw(None)
@@ -373,7 +381,7 @@ try:
 
             # appuifw.app.menu =  appuifw.app.menu + skins_for_menu
 
-            self.timer = e32.Ao_timer()
+            self.__timer = e32.Ao_timer()
 
             self.event = None
             self.eventlock = e32.Ao_lock()
@@ -425,7 +433,7 @@ try:
                 self.event = None
                 e32.ao_yield() #?
 
-            self.timer.cancel()
+            self.__timer.cancel()
             axyz.disconnect()
             self.rotation_sensor.disconnect()
 
@@ -512,7 +520,7 @@ try:
 
         def tick(self):
             self.elapsed_time += TICK_INTERVAL
-            self.timer.after(TICK_INTERVAL, self.tick)
+            self.__timer.after(TICK_INTERVAL, self.tick)
 
             if self.sock:
                 try:
@@ -575,6 +583,10 @@ try:
     # Initialize the UI
     play_mode=None
     ui=UI()
+    result=ui.initialize()
+    if False==result:
+        print "The UI failed to initialize"
+        appuifw.app.set_exit()
     
     quit=False
 
