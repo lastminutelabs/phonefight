@@ -228,10 +228,10 @@ try:
         def __hum_callback(self, prev_state, current_state, error):
             if prev_state == audio.EPlaying and current_state==audio.EOpen:
                 try:
-                    ui.skin['humSounds'][0].stop()
+                    self.skin['humSounds'][0].stop()
                 except:
                     print "no hum sound playing"
-                ui.skin['humSounds'][0].play(times = 600)
+                self.skin['humSounds'][0].play(times = 600)
 
         def play_sound(self, sound, hum=False):
             if not self.silent:
