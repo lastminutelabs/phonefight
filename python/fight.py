@@ -209,19 +209,6 @@ try:
                 except:
                     pass
 
-                #try:
-                #    # Add some text
-                #    if play_mode!=None:
-                #        if (PRACTICE_MODE==play_mode):
-                #            self.buffer.text((10,10), u"Practice mode", fill=0xffffff)
-                #        else:
-                #            self.buffer.text((10,10), u"You're in a fight", fill=0xffffff)
-                #except:
-                #    pass
-
-                #self.buffer.text((10,100), u"frame number : "+str(self.frame_number), fill=0xffffff)
-                #self.frame_number+=1
-
                 # We always have _something_ to show on the canvas, even if the previous stuff failed at some point
                 self.canvas.blit(self.buffer)
 
