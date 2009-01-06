@@ -445,8 +445,6 @@ try:
                     print "outgoing vertical attack"
                     self.event = OUTGOING_VERTICAL_ATTACK_EVENT
 
-                #print "(orientation was %s, last attack %.2f, time now %.2f)" \
-                # % (ORIENTATION_AS_STRING[orientation_then], self.last_attack, now)
                 self.last_attack = now
 
                 self.eventlock.signal()
