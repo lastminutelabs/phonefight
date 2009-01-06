@@ -220,7 +220,7 @@ try:
                     print "no hum sound playing"
                 self.skin['humSounds'][0].play(times = 600)
 
-        def play_sound(self, sound, hum=False):
+        def __play_sound(self, sound, hum=False):
             if not self.silent:
                 try:
                     sound.stop()
@@ -239,10 +239,24 @@ try:
             self.max_health=max_health
             self.health=max_health
             self.playing=True
+            self.__play_sound(one_of(self.skin['startSounds']), True)
 
         def trigger_hit(self, new_health):
             self.hit_counter=2
             self.health=new_health
+            self.__play_sound(one_of(self.skin['hitSounds']), True)
+            
+        def trigger_defence(self):
+            self.__play_sound(one_of(self.skin['chingSounds']), True)
+            pass
+        
+        def trigger_attack_start(self):
+            self.__play_sound(one_of(self.skin['whooshSounds']), True)
+            pass
+        
+        def trigger_dead(self):
+            self.__play_sound(one_of(self.skin['deathSounds']), True)
+            pass
 
         def won_or_dead(self, have_we_won):
             self.playing=False
@@ -254,7 +268,7 @@ try:
             self.skin['humSounds'][0].stop()
             print " Changing skin: " + new_skin["skinName"] 
             self.skin=new_skin
-            self.play_sound(one_of(self.skin['startSounds']), True)            
+            self.__play_sound(one_of(self.skin['startSounds']), True)            
 
 
 
@@ -371,7 +385,6 @@ try:
             
         def play(self):
             ui.start_anew(self.health)
-            ui.play_sound(one_of(ui.skin['startSounds']), True)
 
             while not self.game_over:
 
@@ -449,12 +462,11 @@ try:
 
             if succeeded:
                 print "defence succeeded!"
-                ui.play_sound(one_of(ui.skin['chingSounds']), True)
+                ui.trigger_defence()
             else:
                 self.health -= 1
                 if self.health:
                     print "you're hit, health now %d!" % self.health
-                    ui.play_sound(one_of(ui.skin['hitSounds']), True)
                     ui.trigger_hit(self.health)
                 else:
                     self.dead()
@@ -463,7 +475,7 @@ try:
             print "you lose!"
             self.sock.send(VICTORY_MESSAGE)
             self.game_over = True
-            ui.play_sound(one_of(ui.skin['deathSounds']), True)
+            ui.trigger_dead()
 
         def victory(self):
             print "you win!"
@@ -471,7 +483,7 @@ try:
             self.won = True
 
         def attack(self, event):
-            ui.play_sound(one_of(ui.skin['whooshSounds']), True)
+            ui.trigger_attack_start()
             if self.sock:
                 if event == OUTGOING_HORIZONTAL_ATTACK_EVENT:
                     message = HORIZONTAL_ATTACK_MESSAGE
