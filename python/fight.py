@@ -288,7 +288,9 @@ try:
             self.__popup_counter=2
             self.__popup_image=image
             self.__popup_mask=mask
-            pass
+        
+        def __clear_popup(self):
+            self.__popup_counter=0;
                 
         def invalidate_ui(self):
             # Maybe in the future this will set a flag - currently the ui redraws on each frame anyway
@@ -323,8 +325,9 @@ try:
             # TODO: make sure that NONE of the humsounds are playing... currently we assume that there's only one
             # .wav file in the /hum/ directory.
             self.__skin['humSounds'][0].stop()
-            print " Changing skin: " + new_skin["skinName"] 
+            print " Changing skin: " + new_skin["skinName"]
             self.__skin=new_skin
+            self.__clear_popup()
             self.__play_sound(one_of(self.__skin['startSounds']), True)     
             
         def setSilent(self, silent):
