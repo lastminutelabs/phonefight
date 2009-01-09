@@ -58,44 +58,17 @@ try:
             self.__popup_image=None
             self.__popup_mask=None
             
+            self.SKINS=[]
+            self.__skin=None
+            
+            self.__initialized=False
+            self.debug_ui=False # Set to true to load basic skins and not show the UI for debugging
+            
         def __del__(self):
             if self.__timer:
                 self.__timer.cancel()
-            
-        def initialize(self):
-            
-            # Check to see if skins directory exists
-            if not os.path.exists(self.SKINS_PATH):
-                print "No skin directory found\n\nYou must download at least one skin to this phone"
-                return False
-
-            # Create the canvas
-            appuifw.app.orientation='portrait'
-            appuifw.app.screen='large'
-            self.__canvas=appuifw.Canvas ( redraw_callback=self.__handle_redraw, event_callback=self.__handle_event )
-            appuifw.app.body=self.__canvas
-
-            # Create an offscreen buffer - draw onto this in the __handle_redraw method and then blit onto the main canvas
-            self.__buffer=graphics.Image.new(self.__canvas.size)            
-
-            # Show the loading image
-            self.__loading_image=self.__load_image(self.DATA_PATH+"loading_image.png")
-            self.__buffer.blit(self.__loading_image)
-            self.__canvas.blit(self.__buffer)
-            
-            # Check the skins directory and get the subdirs
-            skins_path = self.SKINS_PATH
-            skinsArray = os.listdir(skins_path)
-            numSkins=len(skinsArray)
-            
-            # We need at least one directory in the skins path, so check and proceed if there is one
-            if 0==numSkins:
-                print "No skins found.  You might need to reinstall, or alternatively put some skins in the e:\data\phonefight\skins directory"
-                return False
                 
-            # Initialize some vars for the loading bar
-            self.__progress_per_skin_section=1.0/(17 * numSkins) # There are 17 different sections for skins
-
+        def __load_skins(self, skins_path, skinsArray):
             # Initialize the empty skins array
             self.SKINS=[]
             
@@ -142,6 +115,47 @@ try:
                 self.__update_progress_bar()
 
                 self.SKINS.append(skin)
+            
+        def initialize(self):
+            
+            if self.debug_ui:
+                debug_skins=['sword','lightsaber']
+                self.__progress_per_skin_section=1.0/(len(debug_skins)*17)
+                self.__load_skins(self.SKINS_PATH, debug_skins)
+                return
+            
+            # Check to see if skins directory exists
+            if not os.path.exists(self.SKINS_PATH):
+                print "No skin directory found\n\nYou must download at least one skin to this phone"
+                return False
+
+            # Create the canvas
+            appuifw.app.orientation='portrait'
+            appuifw.app.screen='large'
+            self.__canvas=appuifw.Canvas ( redraw_callback=self.__handle_redraw, event_callback=self.__handle_event )
+            appuifw.app.body=self.__canvas
+
+            # Create an offscreen buffer - draw onto this in the __handle_redraw method and then blit onto the main canvas
+            self.__buffer=graphics.Image.new(self.__canvas.size)            
+
+            # Show the loading image
+            self.__loading_image=self.__load_image(self.DATA_PATH+"loading_image.png")
+            self.__buffer.blit(self.__loading_image)
+            self.__canvas.blit(self.__buffer)
+            
+            # Check the skins directory and get the subdirs
+            skinsArray = os.listdir(self.SKINS_PATH)
+            numSkins=len(skinsArray)
+            
+            # We need at least one directory in the skins path, so check and proceed if there is one
+            if 0==numSkins:
+                print "No skins found.  You might need to reinstall, or alternatively put some skins in the e:\data\phonefight\skins directory"
+                return False
+                
+            # Initialize some vars for the loading bar
+            self.__progress_per_skin_section=1.0/(17 * numSkins) # There are 17 different sections for skins
+
+            self.__load_skins(self.SKINS_PATH, skinsArray)
                 
             # Initialize the ui to be the first skin in the SKINS array
             self.__skin=self.SKINS[0]
@@ -155,14 +169,19 @@ try:
             self.__timer.after(UI.FRAME_INTERVAL, self.__update_ui)
             
             # If we get here, we have initialized properly
+            self.__initialized=True
             return True
             
         def __update_progress_bar(self):
             self.__loading_progress+=self.__progress_per_skin_section
-            self.__buffer.blit(self.__loading_image)
-            size=self.__loading_progress * 209.0
-            self.__buffer.rectangle((16,126, 16+size,141), fill=(255,0,128) )
-            self.__canvas.blit(self.__buffer)
+            
+            if self.__buffer != None and self.__canvas!=None:
+                self.__buffer.blit(self.__loading_image)
+                size=self.__loading_progress * 209.0
+                self.__buffer.rectangle((16,126, 16+size,141), fill=(255,0,128) )
+                self.__canvas.blit(self.__buffer)
+            else:
+                print "Progress : %f" % self.__loading_progress
 
         # Loads the specified image or returns a 1x1 blank image in case of an error
         def __load_image(self, src):
@@ -257,32 +276,45 @@ try:
                 self.__canvas.blit(self.__buffer)
 
         def __hum_callback(self, prev_state, current_state, error):
-            if prev_state == audio.EPlaying and current_state==audio.EOpen:
-                self.__stop_hum()
-                self.__start_hum()
+            if self.__initialized:
+                if prev_state == audio.EPlaying and current_state==audio.EOpen:
+                    self.__stop_hum()
+                    self.__start_hum()
                 
         def __stop_hum(self):
-            try:
-                self.__skin['humSounds'][0].stop()
-            except:
-                pass
-    
-        def __start_hum(self):
-            try:
-                self.__skin['humSounds'][0].play(times = 600)
-            except:
-                pass
-
-        def __play_sound(self, sound, hum=False):
-            if not self.__silent:
+            # TODO: make sure that NONE of the humsounds are playing... currently we assume that there's only one
+            # .wav file in the /hum/ directory.
+            if self.__initialized:
                 try:
-                    sound.stop()
-                    if hum:
-                        sound.play(times=1, callback = self.__hum_callback)
-                    else:
-                        sound.play(times=1)
+                    self.__skin['humSounds'][0].stop()
                 except:
                     pass
+    
+        def __start_hum(self):
+            if self.__initialized:
+                try:
+                    self.__skin['humSounds'][0].play(times = 600)
+                except:
+                    pass
+                
+        def __play_random_sound(self, sound_type, hum=False):
+            if self.__initialized:
+                try:
+                    self.__play_sound(one_of(self.__skin[sound_type]), hum)
+                except:
+                    pass
+
+        def __play_sound(self, sound, hum=False):
+            if self.__initialized:
+                if not self.__silent:
+                    try:
+                        sound.stop()
+                        if hum:
+                            sound.play(times=1, callback = self.__hum_callback)
+                        else:
+                            sound.play(times=1)
+                    except:
+                        pass
                 
         def __create_popup(self, image, mask=None):
             self.__popup_counter=2
@@ -297,45 +329,50 @@ try:
             pass
 
         def start_anew(self, max_health):
-            self.__max_health=max_health
-            self.__health=max_health
-            self.__playing=True
-            self.__play_sound(one_of(self.__skin['startSounds']), True)
+            if self.__initialized:
+                self.__max_health=max_health
+                self.__health=max_health
+                self.__playing=True
+                self.__play_random_sound('startSounds', True)
 
         def trigger_hit(self, new_health):
-            self.__create_popup(self.__skin['hitImage'], self.__skin['hitImageMask'])
-            self.__health=new_health
-            self.__play_sound(one_of(self.__skin['hitSounds']), True)
+            if self.__initialized:
+                self.__create_popup(self.__skin['hitImage'], self.__skin['hitImageMask'])
+                self.__health=new_health
+                self.__play_random_sound('hitSounds', True)
             
         def trigger_defence(self):
-            self.__create_popup(self.__skin['defendImage'], self.__skin['defendImageMask'])
-            self.__play_sound(one_of(self.__skin['chingSounds']), True)
+            if self.__initialized:
+                self.__create_popup(self.__skin['defendImage'], self.__skin['defendImageMask'])
+                self.__play_random_sound('chingSounds', True)
         
         def trigger_attack_start(self):
-            self.__play_sound(one_of(self.__skin['whooshSounds']), True)
+            if self.__initialized:
+                self.__play_random_sound('whooshSounds', True)
         
         def trigger_dead(self):
-            self.__play_sound(one_of(self.__skin['deathSounds']), True)
+            if self.__initialized:
+                self.__play_random_sound('deathSounds', True)
 
         def won_or_dead(self, have_we_won):
             self.__playing=False
             self.__won=have_we_won
             
         def set_skin(self, new_skin):
-            # TODO: make sure that NONE of the humsounds are playing... currently we assume that there's only one
-            # .wav file in the /hum/ directory.
-            self.__skin['humSounds'][0].stop()
-            print " Changing skin: " + new_skin["skinName"]
-            self.__skin=new_skin
-            self.__clear_popup()
-            self.__play_sound(one_of(self.__skin['startSounds']), True)     
+            if self.__initialized:
+                self.__stop_hum()
+                print " Changing skin: " + new_skin["skinName"]
+                self.__skin=new_skin
+                self.__clear_popup()
+                self.__play_random_sound('startSounds', True)     
             
         def setSilent(self, silent):
-            self.__silent=silent
-            if silent:
-                self.__stop_hum()
-            else:
-                self.__start_hum()
+            if self.__initialized:
+                self.__silent=silent
+                if silent:
+                    self.__stop_hum()
+                else:
+                    self.__start_hum()
 
 
     # How to advertise our service
@@ -390,21 +427,16 @@ try:
             self.elapsed_time = 0.0
             self.last_attack = 0.0
             self.health = INITIAL_HEALTH
-            #self.magnitude_history = zeros(HISTORY_SIZE)
-            #self.moving_average_magnitude = 0.0
             self.orientation_history = zeros(HISTORY_SIZE)
             self.index = 0
             self.game_over = False
             self.quitting = False
 
-
             appuifw.app.exit_key_handler = self.quit
-            appuifw.app.menu = [(unicode(skin["skinName"].title()), self.skin_changer(skin)) for skin in ui.SKINS] + \
-                               [(u"Sound on", self.sound_on),
-                                (u"Sound off", self.sound_off),
-                                (u"Exit", self.quit)]
-
-            # appuifw.app.menu =  appuifw.app.menu + skins_for_menu
+            appuifw.app.menu = [ (u"Choose skin", tuple([(unicode(skin["skinName"].title()), self.skin_changer(skin)) for skin in ui.SKINS]) ),
+                                 (u"Sound on", self.sound_on),
+                                 (u"Sound off", self.sound_off),
+                                 (u"Exit", self.quit) ]
 
             self.__timer = e32.Ao_timer()
 
@@ -420,7 +452,7 @@ try:
             self.rotation_sensor.connect(self.new_rotation_data)
 
             self.tick()
-
+            
         # closures in python are wrong if you expect them to reference a snapshot, correct
         # if you expect them to reference a reference.  This is why when we create the menu a
         # few lines above, we end up using a generator function - because we want them to reference
@@ -477,9 +509,6 @@ try:
 
         def new_accel_data(self, x, y, z):
             magnitude = math.sqrt(x ** 2 + y ** 2 + z ** 2)
-            #old_magnitude = self.magnitude_history[self.index]
-            #self.moving_average_magnitude += (magnitude - old_magnitude) / HISTORY_SIZE
-            #self.magnitude_history[self.index] = magnitude
             self.orientation_history[self.index] = self.orientation
             self.index = (self.index + 1) % HISTORY_SIZE
 
@@ -566,6 +595,11 @@ try:
 
                 except:
                     pass
+                
+                
+                
+                
+                
 
     def server_socket():
         try:
@@ -596,15 +630,38 @@ try:
         
         # We get here, we didn't connect
         return None
+  
+    def quit_app():
+        appuifw.app.set_exit()
+        
 
+    def practice_mode():
+        print "PRACTICE MODE"
+        fight = Fight(PRACTICE_MODE, None)
+        fight.play()
+        
+    def fight(play_mode, sock):
+        sock.setblocking(0)
+        playing = True
 
+        while playing:
+            print "FIGHT!"
+            fight = Fight(play_mode, sock)
+            (won, quitting) = fight.play()
 
-
-
-
-
-
-
+            if quitting:
+                playing = False
+            else:
+                if won:
+                    result = "won"
+                else:
+                    result = "lost"
+                playing = not appuifw.popup_menu([u"Yes", u"No"],
+                                                 u"You %s! Play again?" % result)
+        sock.close()
+        
+        
+        
     # Initialize the UI
     play_mode=None
     ui=UI()
@@ -618,48 +675,36 @@ try:
     # Start a fight.
     while not quit:
         # Options in the main menu
-        CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE, TIME_TO_QUIT = 0, 1, 2, 3
-        play_mode = appuifw.popup_menu([u"I am the champion",
+        CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE, CHANGE_SKIN, TIME_TO_QUIT = 0, 1, 2, 3, 4
+        menu_choice = appuifw.popup_menu([u"I am the champion",
                                         u"I am the challenger",
                                         u"I need practice",
+                                        u"Change skin",
                                         u"Quit"],
                                        u"Select mode of play")
         
-        if (play_mode == TIME_TO_QUIT):
+        if menu_choice == TIME_TO_QUIT:
             quit = True
-        elif play_mode == PRACTICE_MODE:
-            print "PRACTICE MODE"
-            fight = Fight(play_mode, None)
-            fight.play()
+        elif menu_choice == CHANGE_SKIN:
+            skin_id=appuifw.popup_menu([(unicode(skin["skinName"].title())) for skin in ui.SKINS])
+            ui.set_skin(ui.SKINS[skin_id])
+        elif menu_choice == PRACTICE_MODE:
+            practice_mode()
         else:
             sock = None
             
-            if play_mode == CHAMPION_MODE:
+            if menu_choice == CHAMPION_MODE:
                 sock = server_socket()
-            elif play_mode == CHALLENGER_MODE:
+            elif menu_choice == CHALLENGER_MODE:
                 sock = client_socket()
     
             if sock:
-                sock.setblocking(0)
-                playing = True
-    
-                while playing:
-                    print "FIGHT!"
-                    fight = Fight(play_mode, sock)
-                    (won, quitting) = fight.play()
-    
-                    if quitting:
-                        playing = False
-                    else:
-                        if won:
-                            result = "won"
-                        else:
-                            result = "lost"
-                        playing = not appuifw.popup_menu([u"Yes", u"No"],
-                                                         u"You %s! Play again?" % result)
-                sock.close()
+                fight(menu_choice, sock)
 
-    appuifw.app.set_exit()
+    quit_app()
+    
+    
+
 
 except:
     import appuifw
