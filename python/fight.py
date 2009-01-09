@@ -41,7 +41,6 @@ try:
         DATA_PATH="e:\\data\\phonefight\\"
         SKINS_PATH=DATA_PATH+"skins\\"
 
-
         def __init__(self):
             
             # Initialize some properties
@@ -92,7 +91,7 @@ try:
                 return False
                 
             # Initialize some vars for the loading bar
-            self.__progress_per_skin_section=1.0/(15 * numSkins) # There are 16 different sections for skins
+            self.__progress_per_skin_section=1.0/(17 * numSkins) # There are 16 different sections for skins
 
             # Initialize the empty skins array
             self.SKINS=[]
@@ -116,6 +115,8 @@ try:
                 self.__update_progress_bar()
                 skin['hitImage']=           self.__load_image(skins_path + skin_name + '\\images\\hit_1.png')
                 self.__update_progress_bar()
+                skin['defendImage']=        self.__load_image(skins_path + skin_name + '\\images\\defend_1.png')
+                self.__update_progress_bar()
                 skin['healthImages']=[      self.__load_image(skins_path + skin_name + '\\images\\health_1.png'),
                                             self.__load_image(skins_path + skin_name + '\\images\\health_2.png'),
                                             self.__load_image(skins_path + skin_name + '\\images\\health_3.png')]
@@ -125,6 +126,8 @@ try:
                 skin['wonImage']=           self.__load_image(skins_path + skin_name + '\\images\\won.png')
                 self.__update_progress_bar()
                 skin['hitImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\hit_1_mask.png', skin['hitImage'])
+                self.__update_progress_bar()
+                skin['defendImageMask']=    self.__load_image(skins_path + skin_name + '\\images\\defend_1_mask.png')
                 self.__update_progress_bar()
                 skin['healthImageMasks']=  [self.__load_mask_for(skins_path + skin_name + '\\images\\health_1_mask.png', skin['healthImages'][0]),
                                             self.__load_mask_for(skins_path + skin_name + '\\images\\health_2_mask.png', skin['healthImages'][1]),
