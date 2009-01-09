@@ -44,7 +44,6 @@ try:
         def __init__(self):
             
             # Initialize some properties
-            self.__hit_counter=0
             self.__health=0
             self.__max_health=0
             self.__playing=False
@@ -54,6 +53,10 @@ try:
             self.__buffer=None
             self.__canvas=None
             self.__timer=None
+            
+            self.__popup_counter=0
+            self.__popup_image=None
+            self.__popup_mask=None
             
         def __del__(self):
             if self.__timer:
@@ -233,11 +236,20 @@ try:
                     pass
 
                 try:
-                    if self.__hit_counter>0:
-                        self.__buffer.blit(self.__skin['hitImage'], mask=self.__skin['hitImageMask'])
-                        self.__hit_counter-=self.FRAME_INTERVAL
+                    if self.__popup_counter>0:
+                        # Render the popup image
+                        try:
+                            if self.__popup_mask:
+                                self.__buffer.blit(self.__popup_image, mask=self.__popup_mask)
+                            else:
+                                self.__buffer.blit(self.__popup_image)
+                        except:
+                            pass                                
+                            
+                        # Decrement the popup counter
+                        self.__popup_counter-=self.FRAME_INTERVAL
                     else:
-                        self.__hit_counter=0
+                        self.__popup_counter=0
                 except:
                     pass
 
@@ -272,6 +284,12 @@ try:
                 except:
                     pass
                 
+        def __create_popup(self, image, mask=None):
+            self.__popup_counter=2
+            self.__popup_image=image
+            self.__popup_mask=mask
+            pass
+                
         def invalidate_ui(self):
             # Maybe in the future this will set a flag - currently the ui redraws on each frame anyway
             pass
@@ -283,7 +301,7 @@ try:
             self.__play_sound(one_of(self.__skin['startSounds']), True)
 
         def trigger_hit(self, new_health):
-            self.__hit_counter=2
+            self.__create_popup(self.__skin['hitImage'], self.__skin['hitImageMask'])
             self.__health=new_health
             self.__play_sound(one_of(self.__skin['hitSounds']), True)
             
