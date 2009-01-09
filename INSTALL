@@ -3,6 +3,8 @@ Prerequisites
 
 Each participating N95 phone requires:
 
+- Python for S60 v1.4.5 or newer: see http://sourceforge.net/projects/pys60
+
 - The N95 Accelerometer plugin from
   http://research.nokia.com/files/N95_RD_Accelerometer.zip
 
@@ -11,23 +13,54 @@ Each participating N95 phone requires:
   See this wiki page for more details:
   http://wiki.forum.nokia.com/index.php/S60_Sensor_API?ticket=ST-5043-0QRWvAYpcDct3UPHZihFFftPc16ytb4ms1E-20
  
-- Python for S60 v1.4.2 or newer: see http://sourceforge.net/projects/pys60
-
 - Cyke64's axyz Python extension from: http://sourceforge.net/project/showfiles.php?group_id=132176&package_id=252008
   (install the newest self-signed version)
 
 Installation
 ------------
 
+
+There are two ways to install the game.
+
+1. SIS file installation
+
+This is recommended for most people.  This works fine if you've never
+used a program called Python on your phone.  If this doesn't sound
+familiar to you, then this is definitely the best way to install
+phonefight
+
+- Install phonefight.sis.  This will install the game and copy
+  the files to the correct place on the phone, as well as install the
+  correct version of python and all of the required additional libraries
+  that the game requires to run correctly.  There should be no problems
+  with this
+
+
+  
+2. Copying files to the correct location manually (for python coders)
+
+phonefight is a python script, and can be run from the python script
+shell.
+  
+- download the source files from github - http://github.com/lastminutelabs/phonefight/
+
+- copy the "skins" folder into a new directory in e:/data/phonefight/
+
+- install the correct python libraries (as mentioned in the Prerequisites
+  section at the top of this file)
+
+- run fight.py from the python shell.
+
+
+
+
+
+
 For each participating phone:
 
-- Make a directory on your phone's external memory drive called
-  e:\sounds\phonefight and copy everything from the sounds directory into
-  there. 
-
-  The e:\sounds directory may be displayed as 'Sound Clips' on your
-  phone. Don't worry about that. Just make a phonefight subdirectory
-  in there.
+- The files for the skins live in e:/data/phonefight.  We have included
+  two skins with the standard install, but if you fancy changing the
+  sounds or adding your own skins, this is where to store the files.
 
 - (This step is only necessary if socket.bt_discover() fails to
   work. Skip it to begin with.)  Edit python/fight.py to alter the
