@@ -306,6 +306,7 @@ try:
             self.__play_sound(one_of(self.__skin['hitSounds']), True)
             
         def trigger_defence(self):
+            self.__create_popup(self.__skin['defendImage'], self.__skin['defendImageMask'])
             self.__play_sound(one_of(self.__skin['chingSounds']), True)
         
         def trigger_attack_start(self):
