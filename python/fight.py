@@ -94,7 +94,7 @@ try:
                 return False
                 
             # Initialize some vars for the loading bar
-            self.__progress_per_skin_section=1.0/(17 * numSkins) # There are 16 different sections for skins
+            self.__progress_per_skin_section=1.0/(17 * numSkins) # There are 17 different sections for skins
 
             # Initialize the empty skins array
             self.SKINS=[]
