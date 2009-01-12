@@ -1,3 +1,6 @@
 _masters
 build/phonefight.sis
 build/phonefight_script_only.sis
+build/private*
+build/publisher.cer
+build/developer.cer
