@@ -38,7 +38,7 @@ try:
         FRAME_INTERVAL=0.1
 
         DEFAULT_SOUND_VOLUME=3
-        DATA_PATH="e:\\data\\phonefight\\"
+        DATA_PATH="c:\\data\\phonefight\\"
         SKINS_PATH=DATA_PATH+"skins\\"
 
         def __init__(self):
