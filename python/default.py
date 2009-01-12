@@ -436,7 +436,7 @@ try:
             appuifw.app.menu = [ (u"Choose skin", tuple([(unicode(skin["skinName"].title()), self.skin_changer(skin)) for skin in ui.SKINS]) ),
                                  (u"Sound on", self.sound_on),
                                  (u"Sound off", self.sound_off),
-                                 (u"Exit", self.quit) ]
+                                 (u"Back to main menu", self.quit) ]
 
             self.__timer = e32.Ao_timer()
 
