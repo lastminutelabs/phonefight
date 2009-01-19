@@ -1,1 +1,11 @@
-Phonefight requires some additional programs in order to be able to detect how you are moving the phone.  You will be asked to install these as well as part of the install process.
+Phonefight requires additional programs in order to work.
+You will require
+
+Python 1.4.5
+aXYZ 1.0.2
+lightblue 0.3.3
+N95 Accelerometer Plugin
+
+If you have downloaded a bundle package, these should be installed for you
+If you have downloaded the standalone package, you will have to install them yourself
+For more information, go to labs.lastminute.com/phonefight
