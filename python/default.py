@@ -252,7 +252,7 @@ try:
                     # Add your health, if we know it yet
                     if self.__max_health>0:
                         if self.__playing:
-                            healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages'])-1)))
+                            healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages']))-1))
                             self.__buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
                         else:
                             if self.__won:
