@@ -62,7 +62,7 @@ try:
             self.__skin=None
             
             self.__initialized=False
-            self.debug_ui=False # Set to true to load basic skins and not show the UI for debugging
+            self.debug_ui=True # Set to true to load basic skins and not show the UI for debugging
             
         def __del__(self):
             if self.__timer:
@@ -693,10 +693,13 @@ try:
         else:
             sock = None
             
-            if menu_choice == CHAMPION_MODE:
-                sock = server_socket()
-            elif menu_choice == CHALLENGER_MODE:
-                sock = client_socket()
+            try:
+                if menu_choice == CHAMPION_MODE:
+                    sock = server_socket()
+                elif menu_choice == CHALLENGER_MODE:
+                    sock = client_socket()
+            except:
+                print "There's been an error in bluetooth selection"
     
             if sock:
                 fight(menu_choice, sock)
