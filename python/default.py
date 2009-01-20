@@ -103,7 +103,7 @@ try:
                 self.__update_progress_bar()
                 skin['hitImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\hit_1_mask.png', skin['hitImage'])
                 self.__update_progress_bar()
-                skin['defendImageMask']=    self.__load_image(skins_path + skin_name + '\\images\\defend_1_mask.png')
+                skin['defendImageMask']=    self.__load_image(skins_path + skin_name + '\\images\\defend_1_mask.png', skin['defendImage'])
                 self.__update_progress_bar()
                 skin['healthImageMasks']=  [self.__load_mask_for(skins_path + skin_name + '\\images\\health_1_mask.png', skin['healthImages'][0]),
                                             self.__load_mask_for(skins_path + skin_name + '\\images\\health_2_mask.png', skin['healthImages'][1]),
