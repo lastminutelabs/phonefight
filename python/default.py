@@ -426,7 +426,8 @@ try:
             self.won = False
             self.elapsed_time = 0.0
             self.last_attack = 0.0
-            self.health = INITIAL_HEALTH
+            if PRACTICE_MODE != play_mode:
+                self.health = INITIAL_HEALTH
             self.orientation_history = zeros(HISTORY_SIZE)
             self.index = 0
             self.game_over = False
