@@ -43,8 +43,13 @@ def log(text):
 try:
     class UI:
         __FRAME_INTERVAL=0.1
+        
+        __VOL_OFF = 0
+        __VOL_LOW = 3
+        __VOL_MED = 7
+        __VOL_HIGH = 10
 
-        __DEFAULT_SOUND_VOLUME=3
+        __DEFAULT_SOUND_VOLUME=__VOL_MED
         __DATA_PATH="c:\\data\\phonefight\\"
         __SKINS_PATH=__DATA_PATH+"skins\\"
 
@@ -314,6 +319,7 @@ try:
         def __start_hum(self):
             if self.__initialized:
                 try:
+                    self.__skin['humSounds'][0].set_volume(self.__volume)
                     self.__skin['humSounds'][0].play(times = 600)
                 except:
                     pass
@@ -321,7 +327,9 @@ try:
         def __play_random_sound(self, sound_type, hum=False):
             if self.__initialized:
                 try:
-                    self.__play_sound(one_of(self.__skin[sound_type]), hum)
+                    sound = one_of(self.__skin[sound_type])
+                    sound.set_volume(self.__volume)
+                    self.__play_sound(sound, hum)
                 except:
                     pass
 
@@ -330,6 +338,7 @@ try:
                 if not self.__silent:
                     try:
                         sound.stop()
+                        sound.set_volume(self.__volume)
                         if hum:
                             sound.play(times=1, callback = self.__hum_callback)
                         else:
@@ -396,6 +405,22 @@ try:
                     self.__stop_hum()
                 else:
                     self.__start_hum()
+                    
+        def set_volume(self, level):
+            silent=False
+
+            if 0 == level:
+                self.__volume = self.__VOL_OFF
+                silent=True
+            elif 1 == level:
+                self.__volume = self.__VOL_LOW
+            elif 2 == level:
+                self.__volume = self.__VOL_MED
+            else:
+                self.__volume = self.__VOL_HIGH
+                
+            self.setSilent(silent)
+
 
 
     # How to advertise our service
@@ -454,11 +479,12 @@ try:
             self.index = 0
             self.game_over = False
             self.quitting = False
+            
+            volume_options = [[u"Volume off",0], [u"Volume low",1], [u"Volume med",2], [u"Volume high",3]]
 
             appuifw.app.exit_key_handler = self.quit
             appuifw.app.menu = [ (u"Choose skin", tuple([(unicode(skin["skinName"].title()), self.skin_changer(skin)) for skin in ui.SKINS]) ),
-                                 (u"Sound on", self.sound_on),
-                                 (u"Sound off", self.sound_off),
+                                 (u"Set volume", tuple([(option[0], self.volume_changer(option[1])) for option in volume_options]) ),
                                  (u"Back to the fight", self.back_to_fight),
                                  (u"Back to main menu", self.quit) ]
 
@@ -485,11 +511,8 @@ try:
         def skin_changer(self, skin):
             return lambda: ui.set_skin(skin)
 
-        def sound_on(self):
-            ui.setSilent(False);
-
-        def sound_off(self):
-            ui.setSilent(True);
+        def volume_changer(self, level):
+            return lambda: ui.set_volume(level)
             
         def back_to_fight(self):
             pass
@@ -706,16 +729,25 @@ try:
     # Start a fight.
     while not quit:
         # Options in the main menu
-        CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE, CHANGE_SKIN, TIME_TO_QUIT = 0, 1, 2, 3, 4
+        CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE, CHANGE_VOLUME, CHANGE_SKIN, TIME_TO_QUIT = 0, 1, 2, 3, 4, 5
         menu_choice = appuifw.popup_menu([u"I am the champion",
                                         u"I am the challenger",
                                         u"I need practice",
+                                        u"Change volume",
                                         u"Change skin",
                                         u"Quit"],
                                        u"Select mode of play")
         
         if menu_choice == TIME_TO_QUIT:
             quit = True
+        elif menu_choice == CHANGE_VOLUME:
+            vol_choice = appuifw.popup_menu([u"Volume off",
+                                              u"Volume low",
+                                              u"Volume med",
+                                              u"Volume high"],
+                                             u"Choose volume level")
+            if vol_choice != None:
+                ui.set_volume(vol_choice)
         elif menu_choice == CHANGE_SKIN:
             skin_id=appuifw.popup_menu([(unicode(skin["skinName"].title())) for skin in ui.SKINS])
             ui.set_skin(ui.SKINS[skin_id])
