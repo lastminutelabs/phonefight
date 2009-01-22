@@ -32,6 +32,13 @@ except:
     pass
 
 
+def log(text):
+    print text
+    #handle = open("e:\\python\\phonefight.log","a")
+    #handle.write(text + "\n")
+    #handle.close()
+
+
 # Everything is in a try block for safety reasons. stand back!
 try:
     class UI:
@@ -42,6 +49,7 @@ try:
         SKINS_PATH=DATA_PATH+"skins\\"
 
         def __init__(self):
+            log("startup of phonefight")
             
             # Initialize some properties
             self.__health=0
@@ -62,7 +70,7 @@ try:
             self.__skin=None
             
             self.__initialized=False
-            self.debug_ui=True # Set to true to load basic skins and not show the UI for debugging
+            self.debug_ui=False # Set to true to load basic skins and not show the UI for debugging
             
         def __del__(self):
             if self.__timer:
@@ -103,7 +111,7 @@ try:
                 self.__update_progress_bar()
                 skin['hitImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\hit_1_mask.png', skin['hitImage'])
                 self.__update_progress_bar()
-                skin['defendImageMask']=    self.__load_image(skins_path + skin_name + '\\images\\defend_1_mask.png', skin['defendImage'])
+                skin['defendImageMask']=    self.__load_mask_for(skins_path + skin_name + '\\images\\defend_1_mask.png', skin['defendImage'])
                 self.__update_progress_bar()
                 skin['healthImageMasks']=  [self.__load_mask_for(skins_path + skin_name + '\\images\\health_1_mask.png', skin['healthImages'][0]),
                                             self.__load_mask_for(skins_path + skin_name + '\\images\\health_2_mask.png', skin['healthImages'][1]),
@@ -126,7 +134,7 @@ try:
             
             # Check to see if skins directory exists
             if not os.path.exists(self.SKINS_PATH):
-                print "No skin directory found\n\nYou must download at least one skin to this phone"
+                log("No skin directory found\n\nYou must download at least one skin to this phone")
                 return False
 
             # Create the canvas
@@ -149,7 +157,7 @@ try:
             
             # We need at least one directory in the skins path, so check and proceed if there is one
             if 0==numSkins:
-                print "No skins found.  You might need to reinstall, or alternatively put some skins in the e:\data\phonefight\skins directory"
+                log("No skins found.  You might need to reinstall, or alternatively put some skins in the e:\data\phonefight\skins directory")
                 return False
                 
             # Initialize some vars for the loading bar
@@ -159,7 +167,7 @@ try:
                 
             # Initialize the ui to be the first skin in the SKINS array
             self.__skin=self.SKINS[0]
-            print "Initial skin set to : " + self.__skin["skinName"]
+            log( "Initial skin set to : " + self.__skin["skinName"] )
             
             # Make sure that the background gets drawn immediately
             self.__handle_redraw(None)
@@ -181,7 +189,7 @@ try:
                 self.__buffer.rectangle((16,126, 16+size,141), fill=(255,0,128) )
                 self.__canvas.blit(self.__buffer)
             else:
-                print "Progress : %f" % self.__loading_progress
+                log("Progress : %f" % self.__loading_progress)
 
         # Loads the specified image or returns a 1x1 blank image in case of an error
         def __load_image(self, src):
@@ -190,7 +198,7 @@ try:
                 return img
             except:
                 img=graphics.Image.new((1,1))
-                print("Image "+src+" failed to load")
+                log("Image "+src+" failed to load")
                 return img
 
         def __init_sound(self, path):
@@ -199,7 +207,7 @@ try:
                 s.set_volume(self.DEFAULT_SOUND_VOLUME)
                 return s
             except:
-                print "Warning - sound sample "+path+" not found"
+                log( "Warning - sound sample "+path+" not found")
                 return None
 
         def __init_sounds(self, path):
@@ -208,7 +216,7 @@ try:
                listing = os.listdir(path)
                return map(lambda f: self.__init_sound((path + f)), listing )
             except:
-               print "Warning - error loading sounds from "+path
+               log( "Warning - error loading sounds from "+path )
                return None
 
 
@@ -221,7 +229,7 @@ try:
                 return mask
             except:
                 img=graphics.Image.new((1,1), '1')
-                print ("Image "+mask_src+" not loaded (as mask)")
+                log ("Image "+mask_src+" not loaded (as mask)")
                 return img
 
         def __update_ui(self):
@@ -244,7 +252,7 @@ try:
                     # Add your health, if we know it yet
                     if self.__max_health>0:
                         if self.__playing:
-                            healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages'])-1)))
+                            healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages']))-1))
                             self.__buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
                         else:
                             if self.__won:
@@ -361,7 +369,7 @@ try:
         def set_skin(self, new_skin):
             if self.__initialized:
                 self.__stop_hum()
-                print " Changing skin: " + new_skin["skinName"]
+                log(" Changing skin: " + new_skin["skinName"])
                 self.__skin=new_skin
                 self.__clear_popup()
                 self.__play_random_sound('startSounds', True)     
@@ -505,7 +513,7 @@ try:
             self.eventlock.signal()
 
         def new_rotation_data(self, orientation):
-            print "orientation: %s" % ORIENTATION_AS_STRING[orientation]
+            log("orientation: %s" % ORIENTATION_AS_STRING[orientation])
             self.orientation = orientation
 
         def new_accel_data(self, x, y, z):
@@ -520,10 +528,10 @@ try:
 
                 if (orientation_then == sensor.orientation.LEFT
                     or orientation_then == sensor.orientation.RIGHT):
-                    print "outgoing horizontal attack"
+                    log("outgoing horizontal attack")
                     self.event = OUTGOING_HORIZONTAL_ATTACK_EVENT
                 else:
-                    print "outgoing vertical attack"
+                    log("outgoing vertical attack")
                     self.event = OUTGOING_VERTICAL_ATTACK_EVENT
 
                 self.last_attack = now
@@ -533,32 +541,32 @@ try:
         def defend(self, event):
             # should check for stability?
             if (event == INCOMING_VERTICAL_ATTACK_EVENT):
-                print "incoming vertical attack!"
+                log("incoming vertical attack!")
                 succeeded = (self.orientation == sensor.orientation.LEFT
                              or self.orientation == sensor.orientation.RIGHT)
             else:
-                print "incoming horizontal attack!"
+                log("incoming horizontal attack!")
                 succeeded = (self.orientation == sensor.orientation.TOP)
 
             if succeeded:
-                print "defence succeeded!"
+                log("defence succeeded!")
                 ui.trigger_defence()
             else:
                 self.health -= 1
                 if self.health:
-                    print "you're hit, health now %d!" % self.health
+                    log("you're hit, health now %d!" % self.health )
                     ui.trigger_hit(self.health)
                 else:
                     self.dead()
 
         def dead(self):
-            print "you lose!"
+            log("you lose!")
             self.sock.send(VICTORY_MESSAGE)
             self.game_over = True
             ui.trigger_dead()
 
         def victory(self):
-            print "you win!"
+            log("you win!")
             self.game_over = True
             self.won = True
 
@@ -570,7 +578,7 @@ try:
                 else:
                     message = VERTICAL_ATTACK_MESSAGE
 
-                print "sending: %s" % message
+                log("sending: %s" % message )
                 self.sock.send(message)
 
         def tick(self):
@@ -603,6 +611,7 @@ try:
                 
 
     def server_socket():
+        log("Attempting to create server")
         try:
             server = socket.socket(socket.AF_BT, socket.SOCK_STREAM)
             server.bind(("", BT_CHANNEL))
@@ -612,10 +621,11 @@ try:
             conn, client_addr = server.accept()
             return conn
         except:
-            print "Failed to create connection"
+            log("Failed to create connection")
             return None
     
     def client_socket():
+        log("Attempting to discover servers")
         # Get the device from a menu
         device=lightblue.selectdevice()
         
@@ -627,7 +637,7 @@ try:
                 conn.connect((device[0], BT_CHANNEL))
                 return conn
             except:
-                print "Failed to connect to %s"%device[1]
+                log("Failed to connect to %s"%device[1])
         
         # We get here, we didn't connect
         return None
@@ -637,7 +647,7 @@ try:
         
 
     def practice_mode():
-        print "PRACTICE MODE"
+        log("PRACTICE MODE")
         fight = Fight(PRACTICE_MODE, None)
         fight.play()
         
@@ -646,7 +656,7 @@ try:
         playing = True
 
         while playing:
-            print "FIGHT!"
+            log("FIGHT!")
             fight = Fight(play_mode, sock)
             (won, quitting) = fight.play()
 
@@ -668,7 +678,7 @@ try:
     ui=UI()
     result=ui.initialize()
     if False==result:
-        print "The UI failed to initialize"
+        log("The UI failed to initialize")
         appuifw.app.set_exit()
     
     quit=False
@@ -696,14 +706,18 @@ try:
             
             try:
                 if menu_choice == CHAMPION_MODE:
+                    log("Entering Champion Mode")
                     sock = server_socket()
                 elif menu_choice == CHALLENGER_MODE:
+                    log("Entering Challenger Mode")
                     sock = client_socket()
             except:
-                print "There's been an error in bluetooth selection"
+                log("There's been an error in bluetooth selection")
     
             if sock:
                 fight(menu_choice, sock)
+            else:
+                log("No valid bluetooth socket selected")
 
     quit_app()
     
