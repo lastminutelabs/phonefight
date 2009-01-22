@@ -70,6 +70,7 @@ try:
             self.__skin=None
             
             self.__practicing=False
+            self.__waiting=False
             
             self.__initialized=False
             self.debug_ui=False # Set to true to load basic skins and not show the UI for debugging
@@ -111,6 +112,8 @@ try:
                 self.__update_progress_bar()
                 skin['wonImage']=           self.__load_image(skins_path + skin_name + '\\images\\won.png')
                 self.__update_progress_bar()
+                skin['challengeImage']=     self.__load_image(skins_path + skin_name + '\\images\\waiting_for_challenge.png')
+                self.__update_progress_bar()                
                 skin['hitImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\hit_1_mask.png', skin['hitImage'])
                 self.__update_progress_bar()
                 skin['defendImageMask']=    self.__load_mask_for(skins_path + skin_name + '\\images\\defend_1_mask.png', skin['defendImage'])
@@ -123,14 +126,15 @@ try:
                 self.__update_progress_bar()
                 skin['wonImageMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\won_mask.png', skin['wonImage'])
                 self.__update_progress_bar()
-
+                skin['challengeMask']=       self.__load_mask_for(skins_path + skin_name + '\\images\\waiting_for_challenge_mask.png', skin['challengeImage'])
+                self.__update_progress_bar()
                 self.SKINS.append(skin)
             
         def initialize(self):
             
             if self.debug_ui:
                 debug_skins=['sword','lightsaber']
-                self.__progress_per_skin_section=1.0/(len(debug_skins)*17)
+                self.__progress_per_skin_section=1.0/(len(debug_skins)*19)
                 self.__load_skins(self.SKINS_PATH, debug_skins)
                 return
             
@@ -163,7 +167,7 @@ try:
                 return False
                 
             # Initialize some vars for the loading bar
-            self.__progress_per_skin_section=1.0/(17 * numSkins) # There are 17 different sections for skins
+            self.__progress_per_skin_section=1.0/(19 * numSkins) # There are 17 different sections for skins
 
             self.__load_skins(self.SKINS_PATH, skinsArray)
                 
@@ -249,22 +253,25 @@ try:
                     self.__buffer.blit(self.__skin['backgroundImage'])
                 except:
                     pass
-
+                
                 try:
-                    # Add your health, if we know it yet
-                    if False == self.__practicing:
-                        if self.__max_health>0:
-                            if self.__playing:
-                                healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages']))-1))
-                                self.__buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
-                            else:
-                                if self.__won:
-                                    self.__buffer.blit(self.__skin['wonImage'], mask=self.__skin['wonImageMask'])
+                    if True==self.__waiting:
+                        self.__buffer.blit(self.__skin['challengeImage'], mask=self.__skin['challengeMask'])
+                    else:
+                        # Add your health, if we know it yet
+                        if False == self.__practicing:
+                            if self.__max_health>0:
+                                if self.__playing:
+                                    healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages']))-1))
+                                    self.__buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
                                 else:
-                                    self.__buffer.blit(self.__skin['deadImage'], mask=self.__skin['deadImageMask'])
+                                    if self.__won:
+                                        self.__buffer.blit(self.__skin['wonImage'], mask=self.__skin['wonImageMask'])
+                                    else:
+                                        self.__buffer.blit(self.__skin['deadImage'], mask=self.__skin['deadImageMask'])
                 except:
                     pass
-
+                
                 try:
                     if self.__popup_counter>0:
                         # Render the popup image
@@ -334,10 +341,6 @@ try:
         
         def __clear_popup(self):
             self.__popup_counter=0;
-                
-        def invalidate_ui(self):
-            # Maybe in the future this will set a flag - currently the ui redraws on each frame anyway
-            pass
 
         def start_anew(self, max_health):
             if self.__initialized:
@@ -348,6 +351,9 @@ try:
                 
         def setPracticing(self, practicing):
             self.__practicing=practicing
+            
+        def setWaiting(self, waiting):
+            self.__waiting=waiting
 
         def trigger_hit(self, new_health):
             if self.__initialized:
@@ -710,6 +716,7 @@ try:
             practice_mode()
         else:
             sock = None
+            ui.setWaiting(True)
             
             try:
                 if menu_choice == CHAMPION_MODE:
@@ -720,6 +727,8 @@ try:
                     sock = client_socket()
             except:
                 log("There's been an error in bluetooth selection")
+                
+            ui.setWaiting(False)
     
             if sock:
                 fight(menu_choice, sock)
