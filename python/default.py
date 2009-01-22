@@ -42,11 +42,11 @@ def log(text):
 # Everything is in a try block for safety reasons. stand back!
 try:
     class UI:
-        FRAME_INTERVAL=0.1
+        __FRAME_INTERVAL=0.1
 
-        DEFAULT_SOUND_VOLUME=3
-        DATA_PATH="c:\\data\\phonefight\\"
-        SKINS_PATH=DATA_PATH+"skins\\"
+        __DEFAULT_SOUND_VOLUME=3
+        __DATA_PATH="c:\\data\\phonefight\\"
+        __SKINS_PATH=__DATA_PATH+"skins\\"
 
         def __init__(self):
             log("startup of phonefight")
@@ -71,6 +71,8 @@ try:
             
             self.__practicing=False
             self.__waiting=False
+            
+            self.__volume=self.__DEFAULT_SOUND_VOLUME
             
             self.__initialized=False
             self.debug_ui=False # Set to true to load basic skins and not show the UI for debugging
@@ -135,11 +137,11 @@ try:
             if self.debug_ui:
                 debug_skins=['sword','lightsaber']
                 self.__progress_per_skin_section=1.0/(len(debug_skins)*19)
-                self.__load_skins(self.SKINS_PATH, debug_skins)
+                self.__load_skins(self.__SKINS_PATH, debug_skins)
                 return
             
             # Check to see if skins directory exists
-            if not os.path.exists(self.SKINS_PATH):
+            if not os.path.exists(self.__SKINS_PATH):
                 log("No skin directory found\n\nYou must download at least one skin to this phone")
                 return False
 
@@ -153,12 +155,12 @@ try:
             self.__buffer=graphics.Image.new(self.__canvas.size)            
 
             # Show the loading image
-            self.__loading_image=self.__load_image(self.DATA_PATH+"loading_image.png")
+            self.__loading_image=self.__load_image(self.__DATA_PATH+"loading_image.png")
             self.__buffer.blit(self.__loading_image)
             self.__canvas.blit(self.__buffer)
             
             # Check the skins directory and get the subdirs
-            skinsArray = os.listdir(self.SKINS_PATH)
+            skinsArray = os.listdir(self.__SKINS_PATH)
             numSkins=len(skinsArray)
             
             # We need at least one directory in the skins path, so check and proceed if there is one
@@ -169,7 +171,7 @@ try:
             # Initialize some vars for the loading bar
             self.__progress_per_skin_section=1.0/(19 * numSkins) # There are 17 different sections for skins
 
-            self.__load_skins(self.SKINS_PATH, skinsArray)
+            self.__load_skins(self.__SKINS_PATH, skinsArray)
                 
             # Initialize the ui to be the first skin in the SKINS array
             self.__skin=self.SKINS[0]
@@ -180,7 +182,7 @@ try:
 
             # Start the refresh timer
             self.__timer=e32.Ao_timer()
-            self.__timer.after(UI.FRAME_INTERVAL, self.__update_ui)
+            self.__timer.after(UI.__FRAME_INTERVAL, self.__update_ui)
             
             # If we get here, we have initialized properly
             self.__initialized=True
@@ -211,7 +213,7 @@ try:
         def __init_sound(self, path):
             try:
                 s = audio.Sound.open(path)
-                s.set_volume(self.DEFAULT_SOUND_VOLUME)
+                s.set_volume(self.__volume)
                 return s
             except:
                 log( "Warning - sound sample "+path+" not found")
@@ -241,7 +243,7 @@ try:
 
         def __update_ui(self):
             self.__handle_redraw(None)
-            self.__timer.after(UI.FRAME_INTERVAL, self.__update_ui)
+            self.__timer.after(UI.__FRAME_INTERVAL, self.__update_ui)
 
         def __handle_event(self, event):
             #self.__handle_redraw(None)
@@ -285,7 +287,7 @@ try:
                             pass                                
                             
                         # Decrement the popup counter
-                        self.__popup_counter-=self.FRAME_INTERVAL
+                        self.__popup_counter-=self.__FRAME_INTERVAL
                     else:
                         self.__popup_counter=0
                 except:
