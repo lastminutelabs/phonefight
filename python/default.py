@@ -69,6 +69,8 @@ try:
             self.SKINS=[]
             self.__skin=None
             
+            self.__practicing=False
+            
             self.__initialized=False
             self.debug_ui=False # Set to true to load basic skins and not show the UI for debugging
             
@@ -250,15 +252,16 @@ try:
 
                 try:
                     # Add your health, if we know it yet
-                    if self.__max_health>0:
-                        if self.__playing:
-                            healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages']))-1))
-                            self.__buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
-                        else:
-                            if self.__won:
-                                self.__buffer.blit(self.__skin['wonImage'], mask=self.__skin['wonImageMask'])
+                    if False == self.__practicing:
+                        if self.__max_health>0:
+                            if self.__playing:
+                                healthImageNumber=int(math.ceil((float(self.__health)/self.__max_health) * (len(self.__skin['healthImages']))-1))
+                                self.__buffer.blit(self.__skin['healthImages'][healthImageNumber], mask=self.__skin['healthImageMasks'][healthImageNumber])
                             else:
-                                self.__buffer.blit(self.__skin['deadImage'], mask=self.__skin['deadImageMask'])
+                                if self.__won:
+                                    self.__buffer.blit(self.__skin['wonImage'], mask=self.__skin['wonImageMask'])
+                                else:
+                                    self.__buffer.blit(self.__skin['deadImage'], mask=self.__skin['deadImageMask'])
                 except:
                     pass
 
@@ -342,6 +345,9 @@ try:
                 self.__health=max_health
                 self.__playing=True
                 self.__play_random_sound('startSounds', True)
+                
+        def setPracticing(self, practicing):
+            self.__practicing=practicing
 
         def trigger_hit(self, new_health):
             if self.__initialized:
@@ -434,8 +440,7 @@ try:
             self.won = False
             self.elapsed_time = 0.0
             self.last_attack = 0.0
-            if PRACTICE_MODE != play_mode:
-                self.health = INITIAL_HEALTH
+            self.health = INITIAL_HEALTH
             self.orientation_history = zeros(HISTORY_SIZE)
             self.index = 0
             self.game_over = False
@@ -648,12 +653,14 @@ try:
 
     def practice_mode():
         log("PRACTICE MODE")
+        ui.setPracticing(True)
         fight = Fight(PRACTICE_MODE, None)
         fight.play()
         
     def fight(play_mode, sock):
         sock.setblocking(0)
         playing = True
+        ui.setPracticing(False)
 
         while playing:
             log("FIGHT!")
