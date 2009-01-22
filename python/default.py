@@ -184,6 +184,7 @@ try:
             
             # If we get here, we have initialized properly
             self.__initialized=True
+            self.__start_hum();
             return True
             
         def __update_progress_bar(self):
@@ -456,6 +457,7 @@ try:
             appuifw.app.menu = [ (u"Choose skin", tuple([(unicode(skin["skinName"].title()), self.skin_changer(skin)) for skin in ui.SKINS]) ),
                                  (u"Sound on", self.sound_on),
                                  (u"Sound off", self.sound_off),
+                                 (u"Back to the fight", self.back_to_fight),
                                  (u"Back to main menu", self.quit) ]
 
             self.__timer = e32.Ao_timer()
@@ -486,6 +488,9 @@ try:
 
         def sound_off(self):
             ui.setSilent(True);
+            
+        def back_to_fight(self):
+            pass
             
         def play(self):
             ui.start_anew(self.health)
