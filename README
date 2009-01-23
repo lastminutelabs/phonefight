@@ -1,4 +1,4 @@
-Phone Fight v0.3
+Phone Fight v1.0
 ----------------
 
 Phone Fight is a prototype sword-fighting game for two players
@@ -7,9 +7,13 @@ accelerometer within the phones to detect simulated sword slashes and
 blocks, and Bluetooth to communicate those moves between the phones
 and to notify the winning player of victory.
 
-It was conceived and coded (hacked) in about twelve hours by a team
-from lastminute.com labs over the course of the Over the Air event
-held at Imperial College in London on April 4th-5th 2008.
+It was originally conceived and coded (hacked) in about twelve hours
+by a team from lastminute.com labs over the course of the Over the
+Air event held at Imperial College in London on April 4th-5th 2008.
+
+After much procrastination, it was re-hashed into a useable, playable
+and above all installable version towards the end of 2008 and the
+beginning of 2009
 
 It is implemented using Python for S60.
 
@@ -23,12 +27,6 @@ Installation
 
 Please see the INSTALL file for detailed instructions on how to
 install Phone Fight.
-
-Please note that this is a prototype rather than a fully packaged
-standalone program, so an amount of technical knowledge is required to
-set it up. In particular, there are some prerequisites to install, and
-some editing of the fight.py Python script may be necessary to add the
-bluetooth addresses of the participating phones.
 
 
 How to play
@@ -61,21 +59,12 @@ Known limitations
 
 Bugs:
 
-- Both players must give the same answer to the question 'Play again?
-  Yes/No'. Failure to do so will cause the script to crash. The
-  inter-phone protocol needs to be extended to negotiate this.
+- Both players should give the same answer to the question 'Play again?
+  Yes/No'. Failure to do so will confuse the phone that answered "yes"
+  to the question, and you will have to re-start Phone Fight in order
+  to continue playing
 
 - There probably plenty of other bugs. Beware.
-
-Workarounds:
-
-- We have found the Python S60 socket.bt_discover() call to be
-  faulty. It causes the Python interpreter to crash. To avoid this, we
-  have added the facility to hard-code a list of phone bluetooth
-  addresses in the script. To use this facility, amend the script to
-  contain the correct names and bluetooth addresses for your group of
-  phone fighters, then answer 'No' when the challenger is prompted
-  with 'Discover automatically?'
 
 Gameplay inadequacies:
 
@@ -84,8 +73,6 @@ Gameplay inadequacies:
 
 - Each player is essentially defending all the time (either
   horizontally or vertically).
-
-- The application is not very pretty to look at.
 
 - This isn't really a very good simulation of a sword fight. It's
   still fun, though.
@@ -96,10 +83,6 @@ Potential improvements
 
 As well as fixing the above, the following are areas which could be
 improved
-
-- Add new sound effects for new types of sword (wooden sword, photon sword...)
-
-- Add a graphical element to the game (perhaps a health bar)
 
 - Incorporate GPS, camera and network functionality...
 
@@ -146,6 +129,31 @@ Samples used from Freesound:
    10SWORD01.aif (http://freesound.iua.upf.edu/samplesViewSingle.php?id=1464)
 
 We have renamed, converted, cropped and re-pitched these files.
+
+
+Lightsaber sounds were found at theforce.net
+
+http://boards.theforce.net/fan_films/b10015/22852131/p1/
+
+
+
+
+
+Images copyright
+----------------
+
+Imagery for this software was either taken from public domain works,
+from sources that allow redistribution with attribution, or were created
+from scratch.  Here are links to images that require attribution
+
+Portchester Castle Gate by scalespeeder
+http://www.flickr.com/photos/scalespeeder/2389844916/
+
+Futuristic pedestrian bridge from Tokyu Hands to Kinokuniya bookstore by eliazar
+http://flickr.com/photos/eliazar/3149562326/
+
+Lightsaber background image by Sayan
+http://commons.wikimedia.org/wiki/File:Lightsaber_blue.png
 
 
 Thanks

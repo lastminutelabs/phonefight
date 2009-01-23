@@ -8,29 +8,19 @@ opponent before he or she can do the same.
 Setup
 -----
 
-Each player should start the fight.py script from the Python shell's
-'Run Script' menu option.
+Each player should start the game on their phones
 
 One player should select 'I am the Champion' from the menu that
 appears. This make his or her phone the 'server'.  A message will
-appear saying 'waiting for client on channel 5...' (or possibly some
-other number).
+appear saying 'waiting for challenger'
 
 The other player should select 'I am the Challenger'. He or she will
-be then prompted with 'Discover automatically?'. He or she should then
-answer 'yes' and a a list of nearby bluetooth-enabled phones will
-appear*. The other player should select the champion's phone from this
-list. 
+be then prompted with a bluetooth dialogue box and a list of nearby
+bluetooth-enabled phones will appear. The other player should select
+the champion's phone from this list. 
 
 If setup is successful, a sword 'unsheathing' sound effect will be
 heard on both phones, and both players can commence combat.
-
-
-* NOTE that the Python interpreter may crash at this point. This
-probably means that the socket.bt_discover() call is faulty. To remedy
-this, alter the script as described in INSTALL, then rerun the script
-and answer 'no' to the question 'Discover automatically'. If prompted
-for a channel, enter the number displayed on the champion's phone.
 
 
 Combat

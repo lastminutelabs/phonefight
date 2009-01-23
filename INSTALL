@@ -8,67 +8,88 @@ Each participating N95 phone requires:
 - The N95 Accelerometer plugin from
   http://research.nokia.com/files/N95_RD_Accelerometer.zip
 
-  You may also need to install firmware version 20.0.015 or newer
-
   See this wiki page for more details:
   http://wiki.forum.nokia.com/index.php/S60_Sensor_API?ticket=ST-5043-0QRWvAYpcDct3UPHZihFFftPc16ytb4ms1E-20
+  
+- Lightblue version 0.3.3 to enable two phones to communicate over bluetooth
+  http://lightblue.sourceforge.net/
  
 - Cyke64's axyz Python extension from: http://sourceforge.net/project/showfiles.php?group_id=132176&package_id=252008
   (install the newest self-signed version)
 
+- Up-to-date firmware - currently 31.0.017
+
+
 Installation
 ------------
 
+1. SIS file installation (bundle)
 
-There are two ways to install the game.
-
-1. SIS file installation
-
-This is recommended for most people.  This works fine if you've never
-used a program called Python on your phone.  If this doesn't sound
-familiar to you, then this is definitely the best way to install
-phonefight
-
-- Install phonefight.sis.  This will install the game and copy
+  For the vast majority, the program will install from a .sis file
+  named "phonefight_bundle.sis".  This will install the python script and copy
   the files to the correct place on the phone, as well as install the
   correct version of python and all of the required additional libraries
-  that the game requires to run correctly.  There should be no problems
-  with this
+  that the game requires to run correctly.
+
+  This is recommended for most people.  This works fine if you've never
+  used a program called Python on your phone.  If this doesn't sound
+  familiar to you, then this is definitely the best way to install
+  phonefight
+
+
+
+
+If you are reading this, then you are looking at the source code for
+the project.  This means that you may want to install the application
+in a more atomic way.  There are more two methods to do this.
+
+2a. SIS file installation (standalone)
+
+- Install phonefight.sis.  This will install the python script and copy
+  the files to the correct place on the phone, but no more.  You then
+  need to separately install the other prerequisites, which are
+  
+  Python 1.4.5 - http://downloads.sourceforge.net/pys60/PythonForS60_1_4_5_SDK_3rdEd.zip
+  LightBlue 0.3.3 - http://kent.dl.sourceforge.net/sourceforge/lightblue/lightblue-0.3.3-s60-3rdEd.sisx
+  aXYZ 1.0.3 - http://prdownloads.sourceforge.net/pyed/aXYZ_3rd_N95_1_0_2_selfsigned.sisx?download
+  N95 Accellerometer Plugin - http://research.nokia.com/files/N95_RD_Accelerometer.zip
+  Misty - http://cyke64.googlepages.com/misty_selfsigned_infinite.sisx
+  
 
 
   
-2. Copying files to the correct location manually (for python coders)
+2b. Copying files to the correct location manually (for python coders)
 
 phonefight is a python script, and can be run from the python script
 shell.
   
 - download the source files from github - http://github.com/lastminutelabs/phonefight/
 
-- copy the "skins" folder into a new directory in e:/data/phonefight/
+- copy the "skins" folder into a new directory in c:/data/phonefight/
 
 - install the correct python libraries (as mentioned in the Prerequisites
   section at the top of this file)
 
-- run fight.py from the python shell.
+- run default.py from the python shell.
 
 
 
 
 
 
-For each participating phone:
+Skinning
+--------
 
-- The files for the skins live in e:/data/phonefight.  We have included
+- Phone Fight skins are designed to be as customisable as you want them
+  to be.  If you don't like any of our graphics or sounds, you can replace
+  them with your own.
+
+- The files for the skins live in c:/data/phonefight.  We have included
   two skins with the standard install, but if you fancy changing the
-  sounds or adding your own skins, this is where to store the files.
-
-- (This step is only necessary if socket.bt_discover() fails to
-  work. Skip it to begin with.)  Edit python/fight.py to alter the
-  value of the PHONES variable such that it contains the names of the
-  participating phones and their corresponding bluetooth
-  addresses. You can choose what string you like for the phone name.
-
-  If anyone finds the cause of this problem, or knows how to fix it,
-  please let us know.
-
-- Copy python/fight.py to e:\python or c:\python on the phone
+  sounds or adding your own skins, this is where to store the files. Just
+  use the same named files as already exist there.
+  
+- We think there will be memory limitations when adding extra skins, so
+  if you find that adding a new skin directory causes problems, then you
+  might want to try deleting one of the old skins that you don't want
+  to use.

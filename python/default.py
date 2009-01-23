@@ -191,7 +191,6 @@ try:
             
             # If we get here, we have initialized properly
             self.__initialized=True
-            self.__start_hum();
             return True
             
         def __update_progress_bar(self):
