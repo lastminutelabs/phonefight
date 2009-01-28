@@ -10,14 +10,14 @@ Setup
 
 Each player should start the game on their phones
 
-One player should select 'I am the Champion' from the menu that
+One player should select 'Start new duel' from the menu that
 appears. This make his or her phone the 'server'.  A message will
 appear saying 'waiting for challenger'
 
-The other player should select 'I am the Challenger'. He or she will
+The other player should select 'Join existing duel'. He or she will
 be then prompted with a bluetooth dialogue box and a list of nearby
 bluetooth-enabled phones will appear. The other player should select
-the champion's phone from this list. 
+the server phone from this list. 
 
 If setup is successful, a sword 'unsheathing' sound effect will be
 heard on both phones, and both players can commence combat.
@@ -65,6 +65,6 @@ game will crash! (see 'Known limitations' in the README file)
 Practice Mode
 -------------
 
-Selecting 'I need practice' from the first menu will initiate a
+Selecting '1-player practice' from the first menu will initiate a
 practice mode, where you can swoosh your virtual sword to your heart's
 content. No other phone is necessary in this mode.

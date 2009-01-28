@@ -1,4 +1,4 @@
-# Phone Fight v0.3
+# Phone Fight v1.0
 
 # a sword-fighting game for the n95 hacked up in 12 hours at Over The
 # Air 2008 (overtheair.org) by lastminute.com labs
@@ -33,7 +33,13 @@ except:
 
 
 def log(text):
+    # This "print text" line only produces output when running the
+    # script from the python script shell.
     print text
+    
+    # These 3 lines write out loggin information to a file, so that
+    # you can test for error messages when running in installed-app
+    # mode
     #handle = open("e:\\python\\phonefight.log","a")
     #handle.write(text + "\n")
     #handle.close()
@@ -600,13 +606,13 @@ try:
                     self.dead()
 
         def dead(self):
-            log("you lose!")
+            log("You lose!")
             self.sock.send(VICTORY_MESSAGE)
             self.game_over = True
             ui.trigger_dead()
 
         def victory(self):
-            log("you win!")
+            log("You win!")
             self.game_over = True
             self.won = True
 
@@ -729,9 +735,9 @@ try:
     while not quit:
         # Options in the main menu
         CHAMPION_MODE, CHALLENGER_MODE, PRACTICE_MODE, CHANGE_VOLUME, CHANGE_SKIN, TIME_TO_QUIT = 0, 1, 2, 3, 4, 5
-        menu_choice = appuifw.popup_menu([u"I am the champion",
-                                        u"I am the challenger",
-                                        u"I need practice",
+        menu_choice = appuifw.popup_menu([u"Start new duel",
+                                        u"Join existing duel",
+                                        u"1-player practice",
                                         u"Change volume",
                                         u"Change skin",
                                         u"Quit"],

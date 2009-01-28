@@ -14,8 +14,11 @@ Each participating N95 phone requires:
 - Lightblue version 0.3.3 to enable two phones to communicate over bluetooth
   http://lightblue.sourceforge.net/
  
-- Cyke64's axyz Python extension from: http://sourceforge.net/project/showfiles.php?group_id=132176&package_id=252008
+- Cyke64's aXYZ 1.0.2 Python extension from: http://sourceforge.net/project/showfiles.php?group_id=132176&package_id=252008
   (install the newest self-signed version)
+  
+- Misty - extra python plugins, used to disable the screen saver
+  http://cyke64.googlepages.com/misty_selfsigned_infinite.sisx
 
 - Up-to-date firmware - currently 31.0.017
 
@@ -58,7 +61,8 @@ in a more atomic way.  There are more two methods to do this.
 
 
   
-2b. Copying files to the correct location manually (for python coders)
+2b. Copying files to the correct location manually (for python coders
+    and anyone who might like to contribute to the project)
 
 phonefight is a python script, and can be run from the python script
 shell.
@@ -70,7 +74,9 @@ shell.
 - install the correct python libraries (as mentioned in the Prerequisites
   section at the top of this file)
 
-- run default.py from the python shell.
+- run default.py from the python shell.  It doesn't matter where you
+  save the default.py file to, so long as the c:/data/phonefight/ directory
+  exists and contains the expected files.
 
 
 
@@ -93,3 +99,7 @@ Skinning
   if you find that adding a new skin directory causes problems, then you
   might want to try deleting one of the old skins that you don't want
   to use.
+
+- If you put together a really cool skin, we'd love to hear about it and
+  maybe try it out ;-) so leave us a message on the labs.lastminute.com
+  blog.  Cheers!
