@@ -1,0 +1,24 @@
+
+;
+; pkg file for phonefight.sis
+;
+; http://www.symbian.com/Developer/techlib/v70sdocs/doc_source/ToolsAndUtilities/Installing-ref/PackageFileFormatReference.guide.html
+;
+
+;Languages
+&EN
+
+; package header
+#{"phone fight"},(0x20021BCD),1,1,6
+
+; Language-specific vendor names
+%{"lastminute.com"}
+
+; platform
+(0x101F6F88), 0, 0, 0, {"Series60ProductID"}
+
+; Package signature
+*private.key.pem,publisher.cer
+
+; Depends on python being installed and some extra modules - see README.txt
+(0x2000B1A0), 1, 4, 5, {"Python for S60"}
